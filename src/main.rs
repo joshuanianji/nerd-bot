@@ -1,9 +1,11 @@
 use std::env;
 
+use dotenv::dotenv;
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::model::gateway::Ready;
 use serenity::prelude::*;
+mod dadjoke;
 
 struct Handler;
 
@@ -15,12 +17,26 @@ impl EventHandler for Handler {
     // Event handlers are dispatched through a threadpool, and so multiple
     // events can be dispatched simultaneously.
     async fn message(&self, ctx: Context, msg: Message) {
-        if msg.content == "!ping" {
-            // Sending a message can fail, due to a network error, an
-            // authentication error, or lack of permissions to post in the
-            // channel, so log to stdout when some error happens, with a
-            // description of it.
-            if let Err(why) = msg.channel_id.say(&ctx.http, "Pong!").await {
+        if msg.author.id.0 != 239876252331278347 {
+            // break out of loop
+            ()
+        }
+        let ret = dadjoke::test(msg.content);
+
+        if ret.run {
+            let msg = msg
+                .channel_id
+                .send_message(&ctx.http, |m| {
+                    m.content(format!(
+                        "You're not {}, you're {}!",
+                        ret.remaining,
+                        msg.author.to_string()
+                    ))
+                    .embed(|e| e.image("https://c.tenor.com/9RBYPqpnSeUAAAAC/crying-emoji.gif"))
+                })
+                .await;
+
+            if let Err(why) = msg {
                 println!("Error sending message: {:?}", why);
             }
         }
@@ -39,6 +55,7 @@ impl EventHandler for Handler {
 
 #[tokio::main]
 async fn main() {
+    dotenv().ok();
     // Configure the client with your Discord bot token in the environment.
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
     // Set gateway intents, which decides what events the bot will be notified about
