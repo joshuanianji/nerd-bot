@@ -6,6 +6,7 @@ use serenity::model::channel::Message;
 use serenity::model::gateway::Ready;
 use serenity::prelude::*;
 mod dadjoke;
+mod twitter;
 
 struct Handler;
 
@@ -17,28 +18,14 @@ impl EventHandler for Handler {
     // Event handlers are dispatched through a threadpool, and so multiple
     // events can be dispatched simultaneously.
     async fn message(&self, ctx: Context, msg: Message) {
-        if msg.author.id.0 != 239876252331278347 {
-            // break out of loop
-            ()
-        }
-        let ret = dadjoke::test(msg.content);
+        let token = env::var("MODE").expect("Expected token 'MODE' in the environment");
 
-        if ret.run {
-            let msg = msg
-                .channel_id
-                .send_message(&ctx.http, |m| {
-                    m.content(format!(
-                        "You're not {}, you're {}!",
-                        ret.remaining,
-                        msg.author.to_string()
-                    ))
-                    .embed(|e| e.image("https://c.tenor.com/9RBYPqpnSeUAAAAC/crying-emoji.gif"))
-                })
-                .await;
+        let dev_check: bool = token == "development" && msg.author.id.0 == 240645351705542658;
+        let prod_check: bool = token == "production" && msg.author.id.0 == 239876252331278347;
 
-            if let Err(why) = msg {
-                println!("Error sending message: {:?}", why);
-            }
+        if dev_check || prod_check {
+            dadjoke::run_conditional(&ctx, &msg).await;
+            twitter::run_conditional(&ctx, &msg).await;
         }
     }
 
