@@ -16,7 +16,6 @@ mod twitter;
 
 // commands
 mod commands;
-use crate::commands::status;
 
 // other stuff
 mod bot;
@@ -30,7 +29,8 @@ impl EventHandler for Bot {
         if let Interaction::ApplicationCommand(command) = interaction {
             // Run command
             let run_result = match command.data.name.as_str() {
-                "status" => status::run(self, &ctx, &command).await,
+                "status" => commands::status::run(self, &ctx, &command).await,
+                "demon" => commands::demon::run(self, &ctx, &command).await,
                 // else,
                 _ => {
                     command
@@ -90,7 +90,9 @@ impl EventHandler for Bot {
             Mode::DEVELOPMENT => {
                 let commands =
                     GuildId::set_application_commands(&guild_id, &ctx.http, |commands| {
-                        commands.create_application_command(status::create_cmd)
+                        commands
+                            .create_application_command(commands::status::create_cmd)
+                            .create_application_command(commands::demon::create_cmd)
                     })
                     .await;
                 match commands {
@@ -114,7 +116,9 @@ impl EventHandler for Bot {
             Mode::PRODUCTION => {
                 let global_commands =
                     ApplicationCommand::set_global_application_commands(&ctx.http, |commands| {
-                        commands.create_application_command(status::create_cmd)
+                        commands
+                            .create_application_command(commands::status::create_cmd)
+                            .create_application_command(commands::demon::create_cmd)
                     })
                     .await;
                 match global_commands {
