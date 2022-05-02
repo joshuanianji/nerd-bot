@@ -2,6 +2,7 @@ use std::env;
 
 use dotenv;
 use redis;
+
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::model::gateway::Ready;
@@ -155,6 +156,7 @@ async fn main() {
 
     // REDIS
     // connect to the redis db, and check if the `demon-mode` key is set to TRUE
+    // getting a multiplex async connection so it can work with discord's async style (i think?)
     let redis_url = get_redis_url().expect("Failed to get the Redus URL!");
     let client = redis::Client::open(redis_url).expect("Invalid connection URL");
     let mut con = client
@@ -163,7 +165,9 @@ async fn main() {
         .expect("Couldn't get async connection!");
 
     // defaults it to true if not set
-    let _ = init_demon_mode(&mut con).await;
+    let _ = init_demon_mode(&mut con)
+        .await
+        .expect("Failed to init demon mode");
 
     // Create a new instance of the Client, logging in as a bot. This will
     // automatically prepend your bot token with "Bot ", which is a requirement
@@ -177,13 +181,17 @@ async fn main() {
         .await
         .expect("Err creating client");
 
-    // Finally, start a single shard, and start listening to events.
-    //
-    // Shards will automatically attempt to reconnect, and will perform
-    // exponential backoff until it reconnects.
-    if let Err(why) = client.start().await {
-        println!("Client error: {:?}", why);
-    }
+    // https://github.com/serenity-rs/songbird/blob/87918058042c6ae8712f29f3558e27de11d15531/examples/serenity/voice/src/main.rs
+    tokio::spawn(async move {
+        let _ = client
+            .start()
+            .await
+            .map_err(|why| println!("Client ended: {:?}", why));
+    });
+    tokio::signal::ctrl_c()
+        .await
+        .expect("Error waiting for CTRL-C");
+    println!("Received Ctrl-C, shutting down.");
 }
 
 fn get_redis_url() -> Result<String, env::VarError> {
