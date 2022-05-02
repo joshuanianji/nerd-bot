@@ -1,7 +1,15 @@
 # Anti Ahmad Bot
 
-## Local Running 
+## Local Running
+
+### With Docker
 
 ```bash
-cargo run
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+```
+
+### Without Docker
+
+```bash
+cargo watch -x run -w src 
 ```

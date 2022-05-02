@@ -1,6 +1,6 @@
 use std::env;
 
-use dotenv::dotenv;
+use dotenv;
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::model::gateway::Ready;
@@ -36,13 +36,16 @@ impl EventHandler for Handler {
     //
     // In this case, just print what the current user's username is.
     async fn ready(&self, _: Context, ready: Ready) {
-        println!("{} is connected!", ready.user.name);
+        let mode = env::var("MODE").expect("Expected MODE in environment");
+        println!("{} is connected, mode={}", ready.user.name, mode);
     }
 }
 
 #[tokio::main]
 async fn main() {
-    dotenv().ok();
+    let env_path: String = env::var("ENV_PATH").expect("Expected 'ENV_PATH' variable");
+    println!("Reading env file from path '{}'", env_path);
+    dotenv::from_path(env_path).expect("Expected .env file!");
     // Configure the client with your Discord bot token in the environment.
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
     // Set gateway intents, which decides what events the bot will be notified about

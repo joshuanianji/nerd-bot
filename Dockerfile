@@ -1,39 +1,42 @@
-FROM ekidd/rust-musl-builder:stable as builder
+FROM rust:1.60 as build
 
-RUN USER=root cargo new --bin discord-bot
-WORKDIR ./discord-bot
+
+# rust-musl-builder sets workdir to home/rust/src
+RUN USER=root cargo new --bin anti-ahmad-bot
+WORKDIR /anti-ahmad-bot
 COPY ./Cargo.lock ./Cargo.lock
 COPY ./Cargo.toml ./Cargo.toml
+
+# this build step will cache your dependencies
 RUN cargo build --release
 RUN rm src/*.rs
 
-ADD . ./
+# copy source tree
+ADD ./src ./src
 
-RUN rm ./target/x86_64-unknown-linux-musl/release/deps/discord_bot*
+# build for release
+# why is it making it an underscore???
+# https://github.com/rust-lang/cargo/issues/2775 looks into it. Seems like cargo is agnostic towards hyphens and underscores.
+RUN rm ./target/release/deps/anti_ahmad_bot*
 RUN cargo build --release
 
+# installs dumb-init 
+FROM alpine:3.13.5 as installer
 
-FROM alpine:latest
+RUN apk update
+RUN apk add wget
 
-ARG APP=/usr/src/app
+# Install dumb-init
+RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
+RUN chmod +x /usr/local/bin/dumb-init
 
-EXPOSE 8000
+# our final base
+FROM debian:buster-slim
 
-ENV TZ=Etc/UTC \
-    APP_USER=appuser
+# copy the build artifact from the build stage
+COPY --from=build /anti-ahmad-bot/target/release/anti-ahmad-bot .
+# copies dumb-init from installer stage
+COPY --from=installer /usr/local/bin/dumb-init .
 
-RUN addgroup -S $APP_USER \
-    && adduser -S -g $APP_USER $APP_USER
-
-RUN apk update \
-    && apk add --no-cache ca-certificates tzdata \
-    && rm -rf /var/cache/apk/*
-
-COPY --from=builder /home/rust/src/discord-bot/target/x86_64-unknown-linux-musl/release/discord-bot ${APP}/discord-bot
-
-RUN chown -R $APP_USER:$APP_USER ${APP}
-
-USER $APP_USER
-WORKDIR ${APP}
-
-CMD ["./discord-bot"]
+# set the startup command to run your binary
+CMD ["./dumb-init", "./anti-ahmad-bot"]

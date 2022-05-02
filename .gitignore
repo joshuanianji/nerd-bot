@@ -1,2 +1,4 @@
 target
-.env
+.env*
+# caches cargo run output
+.docker-cache 

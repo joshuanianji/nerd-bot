@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  bot:
+    environment:
+      ENV_PATH: /run/secrets/bot_env
+    secrets:
+      - bot_env
+
+# https://serverfault.com/a/936262
+secrets:
+  bot_env:
+    file: ./.env.dev
