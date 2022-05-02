@@ -36,7 +36,7 @@ FROM debian:buster-slim
 # copy the build artifact from the build stage
 COPY --from=build /anti-ahmad-bot/target/release/anti-ahmad-bot .
 # copies dumb-init from installer stage
-COPY --from=installer /usr/local/bin/dumb-init .
+COPY --from=installer /usr/local/bin/dumb-init /usr/bin/dumb-init
 
 # set the startup command to run your binary
-CMD ["./dumb-init", "./anti-ahmad-bot"]
+CMD ["dumb-init", "./anti-ahmad-bot"]
