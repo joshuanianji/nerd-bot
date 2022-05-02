@@ -12,6 +12,7 @@ redis = {version = "0.21.5", features = ["tokio-comp"]}
 unwrap = "1.2.1"
 
 [dependencies.serenity]
+default_features = false
 features = ["client", "gateway", "rustls_backend", "model", "cache"]
 version = "0.11"
 
