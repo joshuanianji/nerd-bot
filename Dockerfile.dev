@@ -1,3 +1,10 @@
+# installs dumb-init 
+FROM alpine:3.13.5 as installer
+
+# Install dumb-init
+RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
+RUN chmod +x /usr/local/bin/dumb-init
+
 FROM rust:1.60 
 
 RUN cargo install cargo-watch
@@ -5,10 +12,12 @@ RUN cargo install cargo-watch
 WORKDIR /app/
 COPY ./Cargo.lock ./Cargo.lock
 COPY ./Cargo.toml ./Cargo.toml
-# RUN cargo run
 
+# copy source code
 COPY ./src ./src 
-COPY ./.docker-cache ./target
 
-ENV CARGO_TARGET_DIR=/app/target
+# copies dumb-init into $PATH
+COPY --from=installer /usr/local/bin/dumb-init /usr/bin/dumb-init
+
+ENTRYPOINT [ "dumb-init" ]
 CMD ["cargo", "watch", "-x", "run", "-w", "src" ]

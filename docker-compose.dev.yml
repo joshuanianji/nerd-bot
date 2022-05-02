@@ -6,4 +6,9 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./src:/app/src
-      - ./.docker-cache:/app/target
+      - cache:/app/target
+
+volumes:
+  # caches rust run output
+  cache:
+    driver: local
