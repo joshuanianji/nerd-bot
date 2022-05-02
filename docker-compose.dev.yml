@@ -1,4 +1,5 @@
 version: "3.9"
+
 services:
   bot:
     build:
@@ -7,8 +8,5 @@ services:
     volumes:
       - ./src:/app/src
       - cache:/app/target
-
-volumes:
-  # caches rust run output
-  cache:
-    driver: local
+    depends_on:
+      - db

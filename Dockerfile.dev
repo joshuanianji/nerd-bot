@@ -18,6 +18,7 @@ COPY ./src ./src
 
 # copies dumb-init into $PATH
 COPY --from=installer /usr/local/bin/dumb-init /usr/bin/dumb-init
+ENV RUST_BACKTRACE=1
 
 ENTRYPOINT [ "dumb-init" ]
 CMD ["cargo", "watch", "-x", "run", "-w", "src" ]

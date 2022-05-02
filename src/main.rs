@@ -7,6 +7,7 @@ use serenity::model::gateway::Ready;
 use serenity::prelude::*;
 mod dadjoke;
 mod twitter;
+use redis;
 
 struct Handler;
 
@@ -53,6 +54,17 @@ async fn main() {
         | GatewayIntents::DIRECT_MESSAGES
         | GatewayIntents::MESSAGE_CONTENT;
 
+    // REDIS
+    // connect to the redis db, and check if the `demon-mode` key is set to TRUE
+    let redis_url = get_redis_url().expect("Failed to get the Redus URL!");
+    let client = redis::Client::open(redis_url).expect("Invalid connection URL");
+    let mut con = client
+        .get_connection()
+        .expect("Couldn't get async connection!");
+
+    // defaults it to true if not set
+    let _ = init_demon_mode(&mut con);
+
     // Create a new instance of the Client, logging in as a bot. This will
     // automatically prepend your bot token with "Bot ", which is a requirement
     // by Discord for bot users.
@@ -68,4 +80,24 @@ async fn main() {
     if let Err(why) = client.start().await {
         println!("Client error: {:?}", why);
     }
+}
+
+fn get_redis_url() -> Result<String, env::VarError> {
+    let redis_host: String = env::var("REDIS_HOST")?;
+    let redis_port: String = env::var("REDIS_PORT")?;
+    let redis_pass: String = env::var("REDIS_PASSWORD")?;
+    let redis_url = format!("redis://:{}@{}:{}", redis_pass, redis_host, redis_port);
+    println!("Redis url: '{}'", redis_url);
+    Ok(redis_url)
+}
+
+fn init_demon_mode(con: &mut redis::Connection) -> redis::RedisResult<()> {
+    let res: u8 = redis::cmd("SETNX").arg("demon-mode").arg(true).query(con)?;
+    if res == 1 {
+        println!("Set demon-mode to true");
+    } else {
+        let demon_mode: bool = redis::cmd("GET").arg("demon-mode").query(con)?;
+        println!("Demon-mode already set to '{}'!", demon_mode);
+    }
+    Ok(())
 }
