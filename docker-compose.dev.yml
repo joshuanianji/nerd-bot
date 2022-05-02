@@ -1,12 +1,17 @@
 version: "3.9"
 
 services:
-  bot:
+  mothership:
     build:
-      context: .
+      context: ./mothership
       dockerfile: Dockerfile.dev
     volumes:
-      - ./src:/app/src
-      - cache:/app/target
+      - ./mothership/src:/app/src
+      - mothership_cache:/app/target
     depends_on:
       - db
+
+volumes:
+  # caches rust run output
+  mothership_cache:
+    driver: local
