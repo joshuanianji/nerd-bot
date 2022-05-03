@@ -2,4 +2,4 @@
 
 Bot in charge of voice stuff.
 
-Uses discord-ts.
+Uses discord-ts. But is it good?
