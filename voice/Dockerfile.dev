@@ -1,0 +1,13 @@
+# Development dockerfile
+# context is this /voice directory
+
+FROM node:16
+
+WORKDIR /app
+
+COPY ["package.json", "package-lock.json", "./"]
+RUN npm ci
+
+COPY . . 
+# for some reason, `npm run dev` does not work (exist with code 0)
+CMD ["npx", "ts-node-dev", "--watch", "src/**/*.ts", "src/index.ts"]

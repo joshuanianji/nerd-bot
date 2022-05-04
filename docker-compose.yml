@@ -8,23 +8,38 @@ services:
       - '6379:6379'
     command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASS}
     volumes:
-      - cache:/data
-  bot:
+      - redisdb:/data
+
+  mothership:
     environment:
-      ENV_PATH: /run/secrets/bot_env
+      ENV_PATH: /run/secrets/mothership_env
       REDIS_HOST: db
       REDIS_PORT: 6379
-      # lol i my redis password safe? Pretty sure you can inspect my docker image and see the password :D 
-      REDIS_PASSWORD: ${REDIS_PASS}
+    # common environment variables defined in top level .env file
+    # MODE, REDIS_PASS, GUILD_ID, APP_ID, DEVS
+    env_file:
+      - .env
     secrets:
-      - bot_env
+      - mothership_env
+
+  voice:
+    environment:
+      ENV_PATH: /run/secrets/voice_env
+    # common environment variables defined in top level .env file
+    # MODE, REDIS_PASS, GUILD_ID, APP_ID, DEVS
+    env_file:
+      - .env
+    secrets:
+      - voice_env
 
 # https://serverfault.com/a/936262
 secrets:
-  bot_env:
-    file: ./.env
+  mothership_env:
+    file: ./mothership/.env
+  voice_env:
+    file: ./voice/.env
 
 volumes:
   # caches rust run output
-  cache:
+  redisdb:
     driver: local
