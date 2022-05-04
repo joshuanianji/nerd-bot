@@ -20,18 +20,18 @@ export const refreshCommands = async (ctx: Context) => {
         if (ctx.mode === 'development') {
             // refresh commands guild-wise
 
-            console.log(`${chalk.blue('[INFO]')} Set Commands for ${chalk.bold('Development')}:\n ${commands.map(c => c.name).join(', ')}\n`);
+            console.log(`${chalk.blue('[INFO]')} Set Commands for ${chalk.bold('Development')}:\n ${commands.map(c => c.name).join(', ')}`);
             await rest.put(Routes.applicationGuildCommands(ctx.appID, ctx.guildID), { body: commandsREST })
         } else if (ctx.mode === 'production') {
             // refresh commands globally
-            console.log(`${chalk.blue('[INFO]')} Set Commands for ${chalk.bold('Production')}:\n ${commands.map(c => c.name).join(', ')}\n`);
+            console.log(`${chalk.blue('[INFO]')} Set Commands for ${chalk.bold('Production')}:\n ${commands.map(c => c.name).join(', ')}`);
             await rest.put(
                 Routes.applicationCommands(ctx.appID),
                 { body: commandsREST },
             );
         }
-        console.log(`${chalk.green('[INFO]')} Sucessfully reloaded application (/) commands.\n`);
+        console.log(`${chalk.green('[INFO]')} Sucessfully reloaded application (/) commands.`);
     } catch (err) {
-        console.log(`${chalk.red('[ERROR]')} There was an error registering a slash command \n${err}`);
+        console.log(`${chalk.red('[ERROR]')} There was an error registering a slash command:\n${err}`);
     }
 }

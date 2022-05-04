@@ -4,29 +4,31 @@ services:
   db:
     image: redis:6.2-alpine
     restart: always
-    ports:
-      - '6379:6379'
     command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASS}
     volumes:
       - redisdb:/data
 
   mothership:
+    tty: true
     environment:
+      TERM: xterm-256color
       ENV_PATH: /run/secrets/mothership_env
-      REDIS_HOST: db
-      REDIS_PORT: 6379
     # common environment variables defined in top level .env file
-    # MODE, REDIS_PASS, GUILD_ID, APP_ID, DEVS
+    # MODE, REDIS_PASS, GUILD_ID, APP_ID, DEVS, REDIS_HOST, REDIS_PORT
     env_file:
       - .env
     secrets:
       - mothership_env
 
   voice:
+    # tty and xterm env makes the logs colourful! 
+    # https://github.com/docker/compose/issues/2231#issuecomment-425135985
+    tty: true
     environment:
+      TERM: xterm-256color
       ENV_PATH: /run/secrets/voice_env
     # common environment variables defined in top level .env file
-    # MODE, REDIS_PASS, GUILD_ID, APP_ID, DEVS
+    # MODE, REDIS_PASS, GUILD_ID, APP_ID, DEVS, REDIS_HOST, REDIS_PORT
     env_file:
       - .env
     secrets:
