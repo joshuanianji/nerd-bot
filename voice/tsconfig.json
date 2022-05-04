@@ -1,18 +1,19 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "outDir": "build",
-    "rootDir": "src",
+    "moduleResolution": "node",
+    "target": "es2021",
+    "module": "commonjs",
+    "lib": ["esnext"],
     "strict": true,
-    "moduleResolution": "Node",
+    "sourceMap": true,
+    "declaration": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-
-    "skipLibCheck": false,
-    "forceConsistentCasingInFileNames": true
+    "declarationDir": "./build",
+    "outDir": "./build"
   },
-  "exclude": ["build", "node_modules"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modues"]
 }
