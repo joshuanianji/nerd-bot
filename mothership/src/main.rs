@@ -197,7 +197,7 @@ async fn main() {
 fn get_redis_url() -> Result<String, env::VarError> {
     let redis_host: String = env::var("REDIS_HOST")?;
     let redis_port: String = env::var("REDIS_PORT")?;
-    let redis_pass: String = env::var("REDIS_PASSWORD")?;
+    let redis_pass: String = env::var("REDIS_PASS")?;
     let redis_url = format!("redis://:{}@{}:{}", redis_pass, redis_host, redis_port);
     Ok(redis_url)
 }

@@ -11,6 +11,16 @@ services:
     depends_on:
       - db
 
+  voice:
+    build:
+      context: ./voice 
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./voice/src:/app/src
+    depends_on:
+      - db
+
+
 volumes:
   # caches rust run output
   mothership_cache:

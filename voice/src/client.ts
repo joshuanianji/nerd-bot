@@ -1,13 +1,18 @@
 import { Client, ClientOptions } from 'discord.js';
 import { Context } from './interfaces/context';
 import * as util from './util';
-
+import * as dotenv from 'dotenv';
+import chalk from 'chalk';
 // extending Discord.js's Client class
 
 class ExtendedClient extends Client {
     context: Context;
 
     constructor(options: ClientOptions) {
+        const [envPath] = util.getEnvVars(['ENV_PATH']);
+        console.log(`${chalk.blue('[INFO]')} Reading config from ${chalk.italic(envPath)}`);
+        dotenv.config({ path: envPath });
+
         super(options);
 
         const [token, mode, appID] = util.getEnvVars(['DISCORD_TOKEN', 'MODE', 'APP_ID']);

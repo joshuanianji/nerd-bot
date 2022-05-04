@@ -1,36 +1,21 @@
-## build runner
-FROM node:lts-alpine as build-runner
+# Production dockerfile
+# context is this /voice directory
 
-# Set temp directory
-WORKDIR /tmp/app
+FROM node:16-alpine3.12 AS builder
 
-# Move package.json
-COPY package.json .
-
-# Install dependencies
-RUN npm install
-
-# Move source files
-COPY src ./src
-COPY tsconfig.json   .
-
-# Build project
-RUN npm run build
-
-## producation runner
-FROM node:lts-alpine as prod-runner
-
-# Set work directory
 WORKDIR /app
 
-# Copy package.json from build-runner
-COPY --from=build-runner /tmp/app/package.json /app/package.json
+COPY ["package.json", "package-lock.json", "./"]
+RUN npm i --production
 
-# Install dependencies
-RUN npm install --only=production
+COPY . .
+# we use @vercel/ncc to compile the code into a single .js file
+RUN npm run build
 
-# Move build files
-COPY --from=build-runner /tmp/app/build /app/build
+# Start the app
+# Copy over `build/index.js` 
+FROM ghcr.io/joshuanianji/scratch-node-dumb-init:16.12.0 as runner
+WORKDIR /app
+COPY --from=builder /app/build/index.js ./
 
-# Start bot
-CMD [ "node", "build/main.js" ]
+CMD ["node", "index.js"]
