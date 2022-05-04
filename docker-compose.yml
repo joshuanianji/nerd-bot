@@ -14,7 +14,7 @@ services:
       TERM: xterm-256color
       ENV_PATH: /run/secrets/mothership_env
     # common environment variables defined in top level .env file
-    # MODE, REDIS_PASS, GUILD_ID, APP_ID, DEVS, REDIS_HOST, REDIS_PORT
+    # MODE, GUILD_ID, APP_ID, DEVS, REDIS_PASS, REDIS_HOST, REDIS_PORT
     env_file:
       - .env
     secrets:
@@ -28,11 +28,12 @@ services:
       TERM: xterm-256color
       ENV_PATH: /run/secrets/voice_env
     # common environment variables defined in top level .env file
-    # MODE, REDIS_PASS, GUILD_ID, APP_ID, DEVS, REDIS_HOST, REDIS_PORT
+    # MODE, GUILD_ID, APP_ID, DEVS, REDIS_PASS, REDIS_HOST, REDIS_PORT
     env_file:
       - .env
     secrets:
       - voice_env
+
 
 # https://serverfault.com/a/936262
 secrets:
@@ -40,6 +41,7 @@ secrets:
     file: ./mothership/.env
   voice_env:
     file: ./voice/.env
+
 
 volumes:
   # caches rust run output
