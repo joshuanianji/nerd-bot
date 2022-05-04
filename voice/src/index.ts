@@ -18,4 +18,3 @@ try {
 } catch (e) {
     console.log(`${chalk.red('[ERROR]')} Error creating context!\n${e}`);
 }
-
