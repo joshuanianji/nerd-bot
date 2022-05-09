@@ -17,6 +17,9 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./voice/src:/app/src
+      - ./voice/media:/app/media
+    environment:
+      - MEDIA_PATH=/app/media 
     depends_on:
       - db
 

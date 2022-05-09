@@ -2,7 +2,8 @@
 
 type Context = {
     token: string,
-    appID: string
+    appID: string,
+    media: Media
 } & (DevContext | ProdContext)
 
 type DevContext = {
@@ -15,4 +16,9 @@ type ProdContext = {
     mode: 'production'
 }
 
-export type { Context };
+// media names to their path
+interface Media {
+    [key: string]: string
+}
+
+export type { Context, Media };

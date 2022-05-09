@@ -2,8 +2,12 @@ import { Intents } from 'discord.js';
 import Client from './client';
 import chalk from 'chalk';
 import { refreshCommands, runCommand } from './slashCommands';
-
+import { generateDependencyReport } from '@discordjs/voice';
 try {
+    // check dependencies
+    console.log(`${chalk.blue('[INFO]')} DEPENDENCIES`)
+    console.log(generateDependencyReport());
+
     // Create a new client instance
     // this client is my ExtendedClient class
     const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES] });

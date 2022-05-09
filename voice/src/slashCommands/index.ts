@@ -4,7 +4,7 @@ import { Routes } from 'discord-api-types/v9';
 import { Context } from '../interfaces/context';
 import chalk from 'chalk';
 import { ping } from './ping';
-import { vc } from './vc';
+import { vc } from './vc/';
 import { SlashCommand } from '../interfaces/slashCommand';
 import { CommandInteraction, Interaction } from 'discord.js';
 

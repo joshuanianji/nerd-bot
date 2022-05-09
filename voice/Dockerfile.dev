@@ -3,6 +3,10 @@
 
 FROM node:16
 
+# install ffmpeg
+# Note that node:16 is based off of debian
+RUN apt update && apt install -y ffmpeg
+
 WORKDIR /app
 
 COPY ["package.json", "package-lock.json", "./"]
