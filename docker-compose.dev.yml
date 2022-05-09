@@ -16,8 +16,8 @@ services:
       context: ./voice 
       dockerfile: Dockerfile.dev
     volumes:
-      - ./voice/src:/app/src
-      - ./voice/media:/app/media
+      - ./voice/src:/app/src     # actual source code
+      - ./voice/media:/app/media # media files
     environment:
       - MEDIA_PATH=/app/media 
     depends_on:

@@ -20,7 +20,7 @@ export const join = async (ctx: Context, intr: CommandInteraction<'cached'>): Pr
     await intr.reply(`Joined ${vcChannel.toString()}!`);
 
     // play audio
-    const vineboom = createAudioResource(ctx.media['vine-boom'], { inlineVolume: true });
+    const vineboom = createAudioResource(ctx.media['vine-boom']);
     console.log(`resource created: ${vineboom.playbackDuration}`)
     const player = createAudioPlayer();
     connection.subscribe(player);
