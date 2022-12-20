@@ -1,7 +1,9 @@
 import { envSchema } from './env';
 import { Client, Events, GatewayIntentBits } from 'discord.js';
+import dotenv from 'dotenv';
 
 // https://sergiodxa.com/articles/using-zod-to-safely-read-env-variables
+dotenv.config();
 const env = envSchema.parse(process.env);
 
 // Create a new client instance
