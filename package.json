@@ -1,0 +1,27 @@
+{
+  "name": "nerd-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshuanianji/anti-ahmad-bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joshuanianji/anti-ahmad-bot/issues"
+  },
+  "homepage": "https://github.com/joshuanianji/anti-ahmad-bot#readme",
+  "dependencies": {
+    "discord.js": "^14.7.1",
+    "zod": "^3.20.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.30.0"
+  }
+}
