@@ -20,7 +20,7 @@ const addCpuStats = async (embed: EmbedBuilder) => {
     const cpu = await si.cpu();
     const load = await si.currentLoad();
     embed.addFields({
-        name: 'CPU Stats',
+        name: 'CPU',
         value: `**Cores**: ${cpu.cores},\n**Avg Load**: ${load.currentLoad.toFixed(2)}%`
     })
 }
@@ -29,7 +29,7 @@ const addMemStats = async (embed: EmbedBuilder) => {
     const mem = await si.mem();
     const usedMem = (mem.active / mem.total) * 100;
     embed.addFields({
-        name: 'Memory Stats',
+        name: 'Memory',
         value: `**Size**: ${filesize(mem.total)},\n**Used Active**: ${usedMem.toFixed(2)}%,\n**Swap Total**: ${filesize(mem.swaptotal)}`
     })
 }
