@@ -1,19 +1,29 @@
-import { envSchema } from './env';
-import { Client, Events, GatewayIntentBits } from 'discord.js';
+import { Events, GatewayIntentBits } from 'discord.js';
+import Client from './client';
+import { ready } from './events/ready';
+import log from './util/log';
 import dotenv from 'dotenv';
+import { configSchema } from './config';
+import { interactionCreate } from './events/interactionCreate';
 
+// read env vars
 // https://sergiodxa.com/articles/using-zod-to-safely-read-env-variables
 dotenv.config();
-const env = envSchema.parse(process.env);
+const config = configSchema.parse(process.env);
+
 
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds] }, config);
+client.init().catch(log.error);
+
 
 // When the client is ready, run this code (only once)
-// We use 'c' for the event parameter to keep it separate from the already defined 'client'
-client.once(Events.ClientReady, c => {
-    console.log(`Ready! Logged in as ${c.user.tag}`);
+client.once(Events.ClientReady, async c => {
+    await ready(client);
 });
 
-// Log in to Discord with your client's token
-client.login(env.TOKEN);
+
+client.on(Events.InteractionCreate, async interaction => {
+    if (!interaction.isChatInputCommand()) return;
+    await interactionCreate(client, interaction);
+})
