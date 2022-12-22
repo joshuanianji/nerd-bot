@@ -1,28 +1,32 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
-	"name": "Nerdbot",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/javascript-node:0-18-bullseye",
-	"features": {
-		"ghcr.io/devcontainers/features/common-utils:2": {},
-		"ghcr.io/devcontainers/features/docker-from-docker:1": {},
-		"ghcr.io/devcontainers/features/git:1": {},
-		"ghcr.io/devcontainers/features/github-cli:1": {},
-		"ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
-            "omzPlugins": "git zsh-autosuggestions zsh-syntax-highlighting"
-        }
-	},
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+  "name": "Nerdbot",
+  // Update the 'dockerComposeFile' list if you have more compose files or use different names.
+  // The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
+  "dockerComposeFile": ["../docker-compose.yml", "docker-compose.yml"],
+  "service": "editor",
+  "workspaceFolder": "/workspace",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/docker-from-docker:1": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
+      "omzPlugins": "git zsh-autosuggestions zsh-syntax-highlighting"
+    }
+  },
+  "extensions": ["prisma.prisma", "irongeek.vscode-env"],
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
 
-	// https://www.kenmuse.com/blog/avoiding-dubious-ownership-in-dev-containers/
-    // https://github.com/microsoft/vscode-remote-release/issues/6810#issuecomment-1310980232
-    "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
+  // https://www.kenmuse.com/blog/avoiding-dubious-ownership-in-dev-containers/
+  // https://github.com/microsoft/vscode-remote-release/issues/6810#issuecomment-1310980232
+  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}"
 
-	// Configure tool-specific properties.
-	// "customizations": {},
+  // Configure tool-specific properties.
+  // "customizations": {},
 
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root"
 }
