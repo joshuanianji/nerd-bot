@@ -20,6 +20,7 @@
   "homepage": "https://github.com/joshuanianji/anti-ahmad-bot#readme",
   "dependencies": {
     "chalk": "^4.1.2",
+    "dayjs": "^1.11.7",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
     "filesize": "^10.0.6",

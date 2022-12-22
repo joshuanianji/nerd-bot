@@ -25,9 +25,11 @@ export const ready = async (client: Client<true>): Promise<void> => {
                 return
             }
             await guild.commands.set(serializedCmds);
+            log.info(`Set guild commands, fetching them...`);
             uploadedCmds = await guild.commands.fetch();
         } else {
             await client.application.commands.set(serializedCmds);
+            log.info(`Set application commands, fetching them...`);
             uploadedCmds = await client.application.commands.fetch();
         }
 
