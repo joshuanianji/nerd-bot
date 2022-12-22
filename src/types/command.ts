@@ -1,4 +1,5 @@
-import { ApplicationCommandDataResolvable, Client, CommandInteraction } from 'discord.js';
+import { ApplicationCommandDataResolvable, CommandInteraction } from 'discord.js';
+import Client from '../client';
 
 export interface Command {
     name: string,

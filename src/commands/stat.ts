@@ -6,11 +6,17 @@ import { filesize } from 'filesize';
 export const stat: Command = {
     name: 'stat',
     description: 'Basic stats about the running computer',
-    run: async (_, intr) => {
+    run: async (client, intr) => {
         const embed = new EmbedBuilder()
-            .setTitle('Hardware Stats');
+            .setTitle('Stats');
         await addCpuStats(embed);
         await addMemStats(embed);
+
+        embed.addFields({
+            name: 'Reaction Collectors',
+            value: `**Count**: ${client.reactionCollectors}`
+        })
+
         intr.reply({ embeds: [embed] })
         return;
     }

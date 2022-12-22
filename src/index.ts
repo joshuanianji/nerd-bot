@@ -5,6 +5,7 @@ import log from './util/log';
 import dotenv from 'dotenv';
 import { configSchema } from './config';
 import { interactionCreate } from './events/interactionCreate';
+import { messageCreate } from './events/messageCreate';
 
 // read env vars
 // https://sergiodxa.com/articles/using-zod-to-safely-read-env-variables
@@ -35,22 +36,5 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 client.on(Events.MessageCreate, async message => {
-
-    // set up the collector to only react to nerd emojis
-    // TODO: set collector to run for 15 minutes
-    const collector = message.createReactionCollector({
-        filter: (reaction, user) => reaction.emoji.name === '🤓',
-        time: 10_000
-    });
-
-    collector.on('collect', (reaction) => {
-        // in case you want to do something when someone reacts with 🤓
-        console.log(`Collected a new ${reaction.emoji.name} reaction`);
-    });
-
-    // fires when the time limit or the max is reached
-    collector.on('end', (collected, reason) => {
-        // reactions are no longer collected
-        console.log(`Collected ${collected.size} emojis. Ended because ${reason}`);
-    });
+    await messageCreate(client, message);
 })

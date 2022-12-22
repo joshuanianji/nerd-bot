@@ -7,19 +7,24 @@ import chalk from 'chalk';
 
 // incorporating the "ready" status for slightly better type inference in certain situations
 class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
-    // these are slash commands
-    public commands: Collection<string, Command>;
+    // these are all slash commands we have
+    public _commands: Collection<string, Command>;
 
-    // nevessary environment variables as a config is stored in Client as well
-    public config: Config;
+    // necessary environment variables as a config is stored in Client as well
+    public _config: Config;
+
+    // how many reaction collectors we have - used in stat command
+    private _reactionCollectors: number;
 
     constructor(options: ClientOptions, config: Config) {
         super(options);
 
-        this.config = config;
+        this._config = config;
 
         // now, get all slash commands and store them (we register on the 'ready' event)
-        this.commands = getCommands();
+        this._commands = getCommands();
+
+        this._reactionCollectors = 0;
     }
 
     public async init() {
@@ -28,6 +33,26 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
 
         // right now, init() does nothing else. Maybe make connections to database?
         log.info(`Successfully ran ${chalk.green('init()')} function`);
+    }
+
+    public decrementReactionCollector(): void {
+        this._reactionCollectors -= 1;
+    }
+
+    public incrementReactionCollector(): void {
+        this._reactionCollectors += 1;
+    }
+
+    get reactionCollectors(): number {
+        return this._reactionCollectors;
+    }
+
+    get config(): Config {
+        return this._config;
+    }
+
+    get commands(): Collection<string, Command> {
+        return this._commands;
     }
 }
 
