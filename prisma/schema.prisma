@@ -1,0 +1,28 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id         String     @id // Discord ID
+    openedHelp Boolean    @default(false)
+    reactions  Reaction[] @relation(name: "UserReactions")
+    reactedBy  Reaction[] @relation(name: "UserReactees") // users who nerd reacted to their messages
+}
+
+model Reaction {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    reacter   User     @relation(name: "UserReactions", fields: [reacterId], references: [id])
+    reactee   User     @relation(name: "UserReactees", fields: [reacteeId], references: [id])
+    messageId String
+    reacterId String
+    reacteeId String
+}

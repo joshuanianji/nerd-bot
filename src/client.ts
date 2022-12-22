@@ -4,6 +4,7 @@ import { Command } from './types/command';
 import { getCommands } from './commands';
 import log from './util/log';
 import chalk from 'chalk';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 // incorporating the "ready" status for slightly better type inference in certain situations
 class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
@@ -16,6 +17,8 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
     // how many reaction collectors we have - used in stat command
     private _reactionCollectors: number;
 
+    private _prisma: PrismaClient;
+
     constructor(options: ClientOptions, config: Config) {
         super(options);
 
@@ -25,6 +28,8 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
         this._commands = getCommands();
 
         this._reactionCollectors = 0;
+
+        this._prisma = new PrismaClient();
     }
 
     public async init() {
@@ -53,6 +58,10 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
 
     get commands(): Collection<string, Command> {
         return this._commands;
+    }
+
+    get prisma(): PrismaClient {
+        return this._prisma;
     }
 }
 
