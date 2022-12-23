@@ -17,6 +17,7 @@ export const messageCreate = (client: Client, message: Message) => {
     const collector = message.createReactionCollector({
         filter: (reaction, user) => reaction.emoji.name === '🤓' && !user.bot,
         time: client.config.ENV === 'dev' ? 10_000 : 1000 * 60 * 5,
+        dispose: true
     });
 
     log.info('Message created: added reaction collector ' + message.content);
@@ -24,14 +25,11 @@ export const messageCreate = (client: Client, message: Message) => {
     client.incrementReactionCollector();
 
     collector.on('collect', async (reaction, user) => {
-        // in case you want to do something when someone reacts with 🤓
-        log.info(`Collected a new ${reaction.emoji.name} reaction`);
-
         await prisma.$transaction(async tx => {
             const prismaUser = await upsertUser(user.id, tx);
             const prismaMsg = await upsertMessage(message, tx);
             // create a new reaction 
-            await prisma.reaction.create({
+            await tx.reaction.create({
                 data: {
                     user: { connect: { id: prismaUser.id } },
                     message: { connect: { id: prismaMsg.id } },
@@ -39,8 +37,23 @@ export const messageCreate = (client: Client, message: Message) => {
             });
         })
 
+        log.info(`Collected a new ${reaction.emoji.name} reaction`);
+        collector.resetTimer();
+    });
 
+    collector.on('dispose', async (reaction, user) => {
+        await prisma.$transaction(async tx => {
+            const { id: userId } = await upsertUser(user.id, tx);
+            const { id: messageId } = await upsertMessage(message, tx);
+            // delete a new reaction 
+            await tx.reaction.delete({
+                where: {
+                    userId_messageId: { userId, messageId },
+                }
+            });
+        })
 
+        log.info(`Deleted a ${reaction.emoji.name} reaction`);
         collector.resetTimer();
     });
 
