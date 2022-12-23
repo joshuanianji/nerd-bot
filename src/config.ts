@@ -16,7 +16,8 @@ const Environment = z.discriminatedUnion('ENV', [
 ])
 
 const Shared = z.object({
-    TOKEN: z.string().min(1)
+    TOKEN: z.string().min(1),
+    WEBHOOK_URL: z.string().min(1)
 })
 
 export const configSchema = Environment.and(Shared);

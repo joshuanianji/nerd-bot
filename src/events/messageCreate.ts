@@ -2,7 +2,7 @@ import { Message, SlashCommandBuilder } from 'discord.js';
 import Client from '../client';
 import { upsertMessage } from '../util/upsertMessage';
 import { upsertUser } from '../util/upsertUser';
-import log from './../util/log';
+import { log } from './../util/log';
 
 export const messageCreate = (client: Client, message: Message) => {
     // only works in guilds
@@ -25,36 +25,46 @@ export const messageCreate = (client: Client, message: Message) => {
     client.incrementReactionCollector();
 
     collector.on('collect', async (reaction, user) => {
-        await prisma.$transaction(async tx => {
-            const prismaUser = await upsertUser(user.id, tx);
-            const prismaMsg = await upsertMessage(message, tx);
-            // create a new reaction 
-            await tx.reaction.create({
-                data: {
-                    user: { connect: { id: prismaUser.id } },
-                    message: { connect: { id: prismaMsg.id } },
-                }
+        try {
+            await prisma.$transaction(async tx => {
+                const prismaUser = await upsertUser(user.id, tx);
+                const prismaMsg = await upsertMessage(message, tx);
+                // create a new reaction 
+                await tx.reaction.create({
+                    data: {
+                        user: { connect: { id: prismaUser.id } },
+                        message: { connect: { id: prismaMsg.id } },
+                    }
+                });
             });
-        });
 
-        log.info(`Collected a new ${reaction.emoji.name} reaction`);
-        collector.resetTimer();
+            log.info(`Collected a new ${reaction.emoji.name} reaction`);
+            collector.resetTimer();
+        } catch (e) {
+            log.error('Failed to add reaction' + e);
+            log.sendError(client.config)('Failed to add reaction!', JSON.stringify(e));
+        }
     });
 
     collector.on('dispose', async (reaction, user) => {
-        await prisma.$transaction(async tx => {
-            const { id: userId } = await upsertUser(user.id, tx);
-            const { id: messageId } = await upsertMessage(message, tx);
-            // delete a new reaction 
-            await tx.reaction.delete({
-                where: {
-                    userId_messageId: { userId, messageId },
-                }
-            });
-        })
+        try {
+            await prisma.$transaction(async tx => {
+                const { id: userId } = await upsertUser(user.id, tx);
+                const { id: messageId } = await upsertMessage(message, tx);
+                // delete a new reaction 
+                await tx.reaction.delete({
+                    where: {
+                        userId_messageId: { userId, messageId },
+                    }
+                });
+            })
 
-        log.info(`Deleted a ${reaction.emoji.name} reaction`);
-        collector.resetTimer();
+            log.info(`Deleted a ${reaction.emoji.name} reaction`);
+            collector.resetTimer();
+        } catch (e) {
+            log.error('Failed to delete reaction' + e);
+            log.sendError(client.config)('Failed to delete reaction!', JSON.stringify(e));
+        }
     });
 
     // fires when the time limit or the max is reached

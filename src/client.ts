@@ -2,7 +2,7 @@ import { Client, ClientOptions, Collection } from 'discord.js';
 import { Config } from './config';
 import { Command } from './types/command';
 import { getCommands } from './commands';
-import log from './util/log';
+import { log } from './util/log';
 import chalk from 'chalk';
 import { Prisma, PrismaClient } from '@prisma/client';
 

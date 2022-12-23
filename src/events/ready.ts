@@ -1,7 +1,7 @@
 import { ApplicationCommand, Collection } from 'discord.js';
 import { serialize } from '../types/command';
 import Client from './../client';
-import log from './../util/log';
+import { log } from './../util/log';
 import chalk from 'chalk';
 
 export const ready = async (client: Client<true>): Promise<void> => {

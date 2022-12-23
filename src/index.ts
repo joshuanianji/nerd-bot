@@ -1,7 +1,7 @@
 import { Events, GatewayIntentBits } from 'discord.js';
 import Client from './client';
 import { ready } from './events/ready';
-import log from './util/log';
+import { log } from './util/log';
 import dotenv from 'dotenv';
 import { configSchema } from './config';
 import { interactionCreate } from './events/interactionCreate';
@@ -21,20 +21,20 @@ const client = new Client({
         GatewayIntentBits.GuildMessageReactions
     ]
 }, config);
-client.init().catch(log.error);
+client.init().catch(e => log.sendError(client.config)('Failure on init!', e));
 
 
 // When the client is ready, run this code (only once)
-client.once(Events.ClientReady, async c => {
-    await ready(client);
+client.once(Events.ClientReady, async _ => {
+    ready(client).catch(e => log.sendError(client.config)('Failure on clientReady', e))
 });
 
 
 client.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isChatInputCommand()) return;
-    await interactionCreate(client, interaction);
+    interactionCreate(client, interaction).catch(e => log.sendError(client.config)('Failure on interactionCreate', e));
 });
 
 client.on(Events.MessageCreate, async message => {
-    await messageCreate(client, message);
+    messageCreate(client, message);
 });

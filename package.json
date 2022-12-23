@@ -22,6 +22,7 @@
     "@prisma/client": "^4.8.0",
     "chalk": "^4.1.2",
     "dayjs": "^1.11.7",
+    "discord-webhook-node": "^1.1.8",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
     "filesize": "^10.0.6",
