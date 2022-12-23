@@ -3,8 +3,8 @@ import si from 'systeminformation';
 import { EmbedBuilder } from '@discordjs/builders';
 import { filesize } from 'filesize';
 
-export const stat: Command = {
-    name: 'stat',
+export const vmstat: Command = {
+    name: 'vmstat',
     description: 'Basic stats about the running computer',
     dm_permission: false,
     run: async (client, intr) => {

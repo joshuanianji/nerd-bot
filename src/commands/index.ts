@@ -3,9 +3,9 @@ import { Collection } from 'discord.js';
 // rather than dynamically importing the commands from searching through the files,
 // i'm going to import than explicitly
 // https://stackoverflow.com/q/69500556
-import { stat } from './stat'
+import { vmstat } from './vmstat'
 import { Command } from '../types/command';
-const importedCmds = [stat];
+const importedCmds = [vmstat];
 
 export const getCommands = (): Collection<string, Command> => {
     const commands = new Collection<string, Command>();
