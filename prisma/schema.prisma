@@ -11,35 +11,28 @@ datasource db {
 }
 
 model User {
-    id         String     @id // Discord ID
+    id         String     @id
     openedHelp Boolean    @default(false)
-    reactions  Reaction[] // the reactions the user has made
+    reactions  Reaction[]
     Message    Message[]  @relation(name: "UserMessages")
 }
 
 model Reaction {
-    id        String   @id @default(cuid())
     createdAt DateTime @default(now())
-
-    // the person who reacted
-    user   User   @relation(fields: [userId], references: [id])
-    userId String
-
-    // the message the reaction is on
-    message   Message @relation(fields: [messageId], references: [id])
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+    message   Message  @relation(fields: [messageId], references: [id])
     messageId String
 
-    @@index([userId, messageId])
+    @@id([userId, messageId])
 }
 
 model Message {
-    id        String @id
+    id        String     @id
     channelId String
     guildId   String
-
-    author   User   @relation(name: "UserMessages", fields: [authorId], references: [id])
-    authorId String
-
+    author    User       @relation(name: "UserMessages", fields: [authorId], references: [id])
+    authorId  String
     reactions Reaction[]
 
     @@index([authorId])
