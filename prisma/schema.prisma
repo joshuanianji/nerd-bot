@@ -28,6 +28,8 @@ model Reaction {
     // the message the reaction is on
     message   Message @relation(fields: [messageId], references: [id])
     messageId String
+
+    @@index([userId, messageId])
 }
 
 model Message {
@@ -39,4 +41,6 @@ model Message {
     authorId String
 
     reactions Reaction[]
+
+    @@index([authorId])
 }
