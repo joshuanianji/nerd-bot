@@ -35,7 +35,7 @@ export const messageCreate = (client: Client, message: Message) => {
                     message: { connect: { id: prismaMsg.id } },
                 }
             });
-        })
+        });
 
         log.info(`Collected a new ${reaction.emoji.name} reaction`);
         collector.resetTimer();
