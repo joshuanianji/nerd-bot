@@ -13,16 +13,30 @@ datasource db {
 model User {
     id         String     @id // Discord ID
     openedHelp Boolean    @default(false)
-    reactions  Reaction[] @relation(name: "UserReactions")
-    reactedBy  Reaction[] @relation(name: "UserReactees") // users who nerd reacted to their messages
+    reactions  Reaction[] // the reactions the user has made
+    Message    Message[]  @relation(name: "UserMessages")
 }
 
 model Reaction {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
-    reacter   User     @relation(name: "UserReactions", fields: [reacterId], references: [id])
-    reactee   User     @relation(name: "UserReactees", fields: [reacteeId], references: [id])
+
+    // the person who reacted
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
+
+    // the message the reaction is on
+    message   Message @relation(fields: [messageId], references: [id])
     messageId String
-    reacterId String
-    reacteeId String
+}
+
+model Message {
+    id        String @id
+    channelId String
+    guildId   String
+
+    author   User   @relation(name: "UserMessages", fields: [authorId], references: [id])
+    authorId String
+
+    reactions Reaction[]
 }

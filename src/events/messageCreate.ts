@@ -1,8 +1,11 @@
-import { Message } from 'discord.js';
+import { Message, SlashCommandBuilder } from 'discord.js';
 import Client from '../client';
 import log from './../util/log';
 
 export const messageCreate = (client: Client, message: Message) => {
+    // only works in guilds
+    if (!message.guild) return;
+
     // set up the collector to only react to nerd emojis
     // also, set collector to run for 15 minutes (900,000 milliseconds)
     const collector = message.createReactionCollector({

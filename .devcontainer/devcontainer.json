@@ -16,7 +16,11 @@
       "omzPlugins": "git zsh-autosuggestions zsh-syntax-highlighting"
     }
   },
-  "extensions": ["prisma.prisma", "irongeek.vscode-env"],
+  "extensions": [
+	"prisma.prisma",
+	"irongeek.vscode-env",
+	"GitHub.copilot"
+],
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
 

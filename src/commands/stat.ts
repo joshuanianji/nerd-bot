@@ -6,6 +6,7 @@ import { filesize } from 'filesize';
 export const stat: Command = {
     name: 'stat',
     description: 'Basic stats about the running computer',
+    dm_permission: false,
     run: async (client, intr) => {
         const embed = new EmbedBuilder()
             .setTitle('Stats');
