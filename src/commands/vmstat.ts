@@ -8,8 +8,7 @@ export const vmstat: Command = {
     description: 'Basic stats about the running computer',
     dm_permission: false,
     run: async (client, intr) => {
-        const embed = new EmbedBuilder()
-            .setTitle('Stats');
+        const embed = new EmbedBuilder().setTitle('vmstat');
         await addCpuStats(embed);
         await addMemStats(embed);
 

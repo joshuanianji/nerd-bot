@@ -18,9 +18,9 @@ export const interactionCreate = async (
     }
 
     try {
-        log.info(`Running command ${chalk.bold(command.name)}...`)
+        log.info(`Running command ${chalk.bold(command.name)}...`);
         await command.run(client, interaction);
-        log.success(`Successfully ran command ${chalk.bold(command.name)}!`)
+        log.success(`Successfully ran command ${chalk.bold(command.name)}!`);
     } catch (error) {
         log.error(`Error running command ${chalk.bold(command.name)}!`);
         console.log(command);
