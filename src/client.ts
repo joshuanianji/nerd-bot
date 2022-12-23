@@ -9,10 +9,10 @@ import { Prisma, PrismaClient } from '@prisma/client';
 // incorporating the "ready" status for slightly better type inference in certain situations
 class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
     // these are all slash commands we have
-    public _commands: Collection<string, Command>;
+    private _commands: Collection<string, Command>;
 
     // necessary environment variables as a config is stored in Client as well
-    public _config: Config;
+    private _config: Config;
 
     // how many reaction collectors we have - used in stat command
     private _reactionCollectors: number;
