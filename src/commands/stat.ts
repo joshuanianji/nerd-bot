@@ -27,12 +27,20 @@ export const stat: Command = {
 
 const addMessages = async (embed: EmbedBuilder, prisma: PrismaClient, intr: CommandInteraction) => {
     // all the messages sent by the user (empty if new user)
+    // make sure messages have at least one reaction relation
+    // For example, if a user unreacts to a message, the message will still be in the database
     const [messages, messagesPast24h] = await prisma.$transaction([
-        prisma.message.count({ where: { authorId: intr.user.id } }),
         prisma.message.count({
             where: {
                 authorId: intr.user.id,
-                createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+                reactions: { some: {} }
+            }
+        }),
+        prisma.message.count({
+            where: {
+                authorId: intr.user.id,
+                createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+                reactions: { some: {} }
             }
         })
     ]);
