@@ -1,9 +1,10 @@
 import { Command } from '../types/command';
 import si from 'systeminformation';
 import { EmbedBuilder } from '@discordjs/builders';
-import { getUser } from '../util/getUser';
+import { upsertUser } from '../util/upsertUser';
 import Client from './../client';
 import { CommandInteraction } from 'discord.js';
+import { PrismaClient } from '@prisma/client';
 
 export const stat: Command = {
     name: 'stat',
@@ -14,29 +15,27 @@ export const stat: Command = {
             .setTitle(`${intr.user.tag}'s Nerd Stats`);
 
         // first, get user (or create an empty one if they haven't participated yet)
-        const user = await getUser(intr.user.id, client.prisma);
-        // TODO: add a "hello" if it's their first time
+        await upsertUser(intr.user.id, client.prisma);
 
-        await addMessages(embed, client, intr);
-        await addReactions(embed, client, intr);
+        await addMessages(embed, client.prisma, intr);
+        await addReactions(embed, client.prisma, intr);
 
         intr.reply({ embeds: [embed] });
         return;
     }
 }
 
-const addMessages = async (embed: EmbedBuilder, client: Client, intr: CommandInteraction) => {
-    // all the messages sent by the user that got nerd reacted (empty if new user)
-    const messages = await client.prisma.message.count({
-        where: { authorId: intr.user.id }
-    });
-
-    const messagesPast24h = await client.prisma.message.count({
-        where: {
-            authorId: intr.user.id,
-            createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
-        }
-    });
+const addMessages = async (embed: EmbedBuilder, prisma: PrismaClient, intr: CommandInteraction) => {
+    // all the messages sent by the user (empty if new user)
+    const [messages, messagesPast24h] = await prisma.$transaction([
+        prisma.message.count({ where: { authorId: intr.user.id } }),
+        prisma.message.count({
+            where: {
+                authorId: intr.user.id,
+                createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+            }
+        })
+    ]);
 
     embed.addFields({
         name: 'Messages that got Nerd Reacted',
@@ -44,21 +43,20 @@ const addMessages = async (embed: EmbedBuilder, client: Client, intr: CommandInt
     });
 }
 
-const addReactions = async (embed: EmbedBuilder, client: Client, intr: CommandInteraction) => {
-    // all the messages sent by the user that got nerd reacted (empty if new user)
-    const messages = await client.prisma.reaction.count({
-        where: { userId: intr.user.id }
-    });
-
-    const messagesPast24h = await client.prisma.reaction.count({
-        where: {
-            userId: intr.user.id,
-            createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
-        }
-    });
+const addReactions = async (embed: EmbedBuilder, prisma: PrismaClient, intr: CommandInteraction) => {
+    // all the nerd reactions sent by the user
+    const [reactions, reactionsPast24h] = await prisma.$transaction([
+        prisma.reaction.count({ where: { userId: intr.user.id } }),
+        prisma.reaction.count({
+            where: {
+                userId: intr.user.id,
+                createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+            }
+        })
+    ]);
 
     embed.addFields({
         name: 'Nerd Reactions Given',
-        value: `**Total**: ${messages},\n**Past 24h**: ${messagesPast24h}`
+        value: `**Total**: ${reactions},\n**Past 24h**: ${reactionsPast24h}`
     });
 }

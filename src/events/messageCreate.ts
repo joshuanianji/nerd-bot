@@ -1,7 +1,7 @@
 import { Message, SlashCommandBuilder } from 'discord.js';
 import Client from '../client';
-import { getMessage } from '../util/getMessage';
-import { getUser } from '../util/getUser';
+import { upsertMessage } from '../util/upsertMessage';
+import { upsertUser } from '../util/upsertUser';
 import log from './../util/log';
 
 export const messageCreate = (client: Client, message: Message) => {
@@ -27,15 +27,19 @@ export const messageCreate = (client: Client, message: Message) => {
         // in case you want to do something when someone reacts with 🤓
         log.info(`Collected a new ${reaction.emoji.name} reaction`);
 
-        const prismaUser = await getUser(user.id, prisma);
-        const prismaMsg = await getMessage(message, prisma);
-        // create a new reaction 
-        await prisma.reaction.create({
-            data: {
-                user: { connect: { id: prismaUser.id } },
-                message: { connect: { id: prismaMsg.id } },
-            }
-        });
+        await prisma.$transaction(async tx => {
+            const prismaUser = await upsertUser(user.id, tx);
+            const prismaMsg = await upsertMessage(message, tx);
+            // create a new reaction 
+            await prisma.reaction.create({
+                data: {
+                    user: { connect: { id: prismaUser.id } },
+                    message: { connect: { id: prismaMsg.id } },
+                }
+            });
+        })
+
+
 
         collector.resetTimer();
     });
