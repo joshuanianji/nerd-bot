@@ -1,17 +1,9 @@
 version: '3.9'
 services:
   editor:
-    image: 'mcr.microsoft.com/devcontainers/javascript-node:0-18-bullseye'
+    image: 'mcr.microsoft.com/devcontainers/javascript-node:0-16-bullseye'
     volumes:
-      - ../:/workspace:cached
+      - ./:/workspace:cached
     command: /bin/sh -c "while sleep 1000; do :; done"
     depends_on:
       - db
-
-  db:
-    image: postgres:15
-    volumes:
-      - db_data:/var/lib/postgresql/data
-
-volumes:
-  db_data:

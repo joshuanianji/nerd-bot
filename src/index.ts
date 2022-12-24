@@ -32,7 +32,7 @@ client.once(Events.ClientReady, async _ => {
 
 client.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isChatInputCommand()) return;
-    interactionCreate(client, interaction).catch(e => log.sendError(client.config)('Failure on interactionCreate', e));
+    await interactionCreate(client, interaction);
 });
 
 client.on(Events.MessageCreate, async message => {

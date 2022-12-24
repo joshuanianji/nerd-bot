@@ -1,4 +1,4 @@
-import { Client, ClientOptions, Collection } from 'discord.js';
+import { Client, ClientOptions, Collection, ThreadAutoArchiveDuration } from 'discord.js';
 import { Config } from './config';
 import { Command } from './types/command';
 import { getCommands } from './commands';
@@ -34,10 +34,15 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
 
     public async init() {
         // Log in to Discord with the client token
+        log.info('Logging in...')
         await this.login(this.config.TOKEN);
 
-        // right now, init() does nothing else. Maybe make connections to database?
-        log.info(`Successfully ran ${chalk.green('init()')} function`);
+        // Test prisma connection
+        // https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/connection-management#connect
+        log.info('Connecting to prisma...')
+        await this.prisma.$connect();
+
+        log.success(`Successfully ran ${chalk.green('init()')} function`);
     }
 
     public decrementReactionCollector(): void {

@@ -2,7 +2,7 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
   "name": "Nerdbot",
-  "dockerComposeFile": [ "docker-compose.yml"],
+  "dockerComposeFile": [ "../docker-compose.yml", "docker-compose.yml"],
   "service": "editor",
   "workspaceFolder": "/workspace",
   "features": {

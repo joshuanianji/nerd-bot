@@ -22,8 +22,7 @@ export const interactionCreate = async (
         await command.run(client, interaction);
         log.success(`Successfully ran command ${chalk.bold(command.name)}!`);
     } catch (error) {
-        log.error(`Error running command ${chalk.bold(command.name)}!`);
-        console.log(command);
+        log.sendError(client.config)(`Error running command ${command.name}!`, JSON.stringify(error));
         await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
     }
 }

@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: ${RESTART_POLICY}
+    depends_on:
+      - db

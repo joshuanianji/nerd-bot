@@ -1,14 +1,15 @@
 version: '3.9'
-services:
-  bot:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - db
 
+# This is the docker-compose file for production
+
+services:
   db:
     image: postgres:15
+    restart: ${RESTART_POLICY}
+    environment:
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_DB
     volumes:
       - db_data:/var/lib/postgresql/data
 

@@ -1,17 +1,12 @@
-FROM node:18-alpine
+FROM node:16-bullseye-slim
 
-# Create app directory
+# install dumb init and open-ssl
+RUN apt-get update && apt-get install -y dumb-init openssl && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /usr/src/app
-
-# Install app dependencies
 COPY package*.json ./
+RUN npm install
 
-RUN npm install --only=production
-
-# Bundle app source
 COPY . .
-
-RUN npm run build
-
-# run node 
-CMD [ "node", "build/index.js" ]
+RUN npm run build && npm prune --production
+CMD [ "/usr/bin/dumb-init", "--", "node", "build/index.js" ]
