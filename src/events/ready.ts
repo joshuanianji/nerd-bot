@@ -5,7 +5,10 @@ import { log } from './../util/log';
 import chalk from 'chalk';
 
 export const ready = async (client: Client<true>): Promise<void> => {
-    log.info(`${chalk.bold(client.user.tag)} is online! Running in ${chalk.bold.bgCyan(client.config.ENV)} mode.`)
+    // get how many guilds the bot is in
+    const guilds = await client.guilds.fetch();
+
+    log.info(`${chalk.bold(client.user.tag)} is online! Running in ${chalk.bold.bgCyan(client.config.ENV)} mode and serving ${chalk.green(guilds)} servers`)
 
     if (client.application === null) {
         throw new Error('Client did not register in time, please try again');
