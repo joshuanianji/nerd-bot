@@ -38,3 +38,11 @@ client.on(Events.InteractionCreate, async interaction => {
 client.on(Events.MessageCreate, async message => {
     messageCreate(client, message);
 });
+
+client.on(Events.GuildCreate, async guild => {
+    log.sendInfo(client.config)('GUILD INFO', `Joined guild ${guild.name} (${guild.id})`);
+});
+
+client.on(Events.GuildDelete, async guild => {
+    log.sendInfo(client.config)('GUILD INFO', `Removed from guild ${guild.name} (${guild.id})`);
+});

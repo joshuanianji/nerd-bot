@@ -31,4 +31,15 @@ export namespace log {
         hook.error('**Nerdbot Failure!**', title, err)
             .catch(err => error("Log also failed to send!" + err));
     }
+
+    // similarly for info that is important
+    export const sendInfo = (config: Config) => (title: string, msg: string): void => {
+        const extraInfo = config.ENV === 'dev' ? '' : ` (${chalk.green('sending to Discord')})`
+        console.log(`${getTime()} [${chalk.bold.yellow('SEND INFO')}]${extraInfo} ${title}\n${msg}`);
+        if (config.ENV === 'dev') return;
+
+        const hook = new Webhook(config.WEBHOOK_URL);
+        hook.info('**Nerdbot Info!**', title, msg)
+            .catch(err => error("Log also failed to send!" + err));
+    }
 }
