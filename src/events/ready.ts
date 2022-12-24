@@ -5,7 +5,7 @@ import { log } from './../util/log';
 import chalk from 'chalk';
 
 export const ready = async (client: Client<true>): Promise<void> => {
-    log.info(`${chalk.bold(client.user.tag)} is online!`)
+    log.info(`${chalk.bold(client.user.tag)} is online! Running in ${chalk.bold.bgCyan(client.config.ENV)} mode.`)
 
     if (client.application === null) {
         throw new Error('Client did not register in time, please try again');
@@ -24,10 +24,12 @@ export const ready = async (client: Client<true>): Promise<void> => {
                 log.error(`Could not find dev server ID: ${config.DEV_SERVER}`);
                 return
             }
+            // register commands in the dev guild - this should be relatively fast
             await guild.commands.set(serializedCmds);
             log.info(`Set guild commands, fetching them...`);
             uploadedCmds = await guild.commands.fetch();
         } else {
+            // register commands globally - this can take a few hours
             await client.application.commands.set(serializedCmds);
             log.info(`Set application commands, fetching them...`);
             uploadedCmds = await client.application.commands.fetch();
