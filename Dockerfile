@@ -5,7 +5,7 @@ FROM node:16-bullseye-slim
 RUN apt-get update && apt-get install -y dumb-init openssl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /project
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json prisma ./
 RUN npm ci
 
 COPY . .
