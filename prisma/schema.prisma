@@ -23,18 +23,20 @@ model Reaction {
     userId    String
     message   Message  @relation(fields: [messageId], references: [id])
     messageId String
+    position  Int // first reaction is 0
 
     @@id([userId, messageId])
 }
 
 model Message {
-    id        String     @id
-    channelId String
-    guildId   String
-    author    User       @relation(fields: [authorId], references: [id])
-    authorId  String
-    reactions Reaction[]
-    createdAt DateTime   @default(now())
+    id              String     @id
+    channelId       String
+    guildId         String
+    author          User       @relation(fields: [authorId], references: [id])
+    authorId        String
+    reactions       Reaction[]
+    reactionCounter Int        @default(0) // auto increments, even if reactions are deleted
+    createdAt       DateTime   @default(now())
 
     @@index([authorId])
 }

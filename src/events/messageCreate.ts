@@ -28,12 +28,13 @@ export const messageCreate = (client: Client, message: Message) => {
         try {
             await prisma.$transaction(async tx => {
                 const prismaUser = await upsertUser(user.id, tx);
-                const prismaMsg = await upsertMessage(message, tx);
+                const prismaMsg = await upsertMessage(message, tx, 'incrementCounter');
                 // create a new reaction 
                 await tx.reaction.create({
                     data: {
                         user: { connect: { id: prismaUser.id } },
                         message: { connect: { id: prismaMsg.id } },
+                        position: prismaMsg.reactionCounter
                     }
                 });
             });
@@ -50,7 +51,7 @@ export const messageCreate = (client: Client, message: Message) => {
         try {
             await prisma.$transaction(async tx => {
                 const { id: userId } = await upsertUser(user.id, tx);
-                const { id: messageId } = await upsertMessage(message, tx);
+                const { id: messageId } = await upsertMessage(message, tx, 'decrementCounter');
                 // delete a new reaction 
                 await tx.reaction.delete({
                     where: {

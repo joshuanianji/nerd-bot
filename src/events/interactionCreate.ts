@@ -1,6 +1,6 @@
 import { CacheType, ChatInputCommandInteraction } from 'discord.js';
 import Client from '../client';
-import log from '../util/log';
+import { log } from '../util/log';
 import chalk from 'chalk';
 
 // runs whenever an interaction is created

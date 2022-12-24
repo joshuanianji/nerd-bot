@@ -3,9 +3,11 @@ import { Message } from 'discord.js';
 import { Message as PrismaMessage } from '@prisma/client';
 import { upsertUser } from './upsertUser';
 
+type CounterAction = 'incrementCounter' | 'decrementCounter' | 'none';
 
 /**
  * Finds a message by its ID (upserting user), and creates one if it doesn't exist.
+ * Also, acts upon the counter.
  * 
  * Note, if you pass in a Prisma.TransactionClient, everything will be a single transaction (i think)
  * 
@@ -15,12 +17,13 @@ import { upsertUser } from './upsertUser';
  */
 export const upsertMessage = async <P extends Prisma.TransactionClient>(
     message: Message<true>,
-    prisma: P
+    prisma: P,
+    counterAction: CounterAction
 ): Promise<PrismaMessage> => {
     await upsertUser(message.author.id, prisma);
     return await prisma.message.upsert({
         where: { id: message.id },
-        update: {},
+        update: getUpdate(counterAction),
         create: {
             id: message.id,
             channelId: message.channelId,
@@ -29,4 +32,14 @@ export const upsertMessage = async <P extends Prisma.TransactionClient>(
             createdAt: message.createdAt
         }
     });
+}
+
+const getUpdate = (action: CounterAction): Prisma.XOR<Prisma.MessageUpdateInput, Prisma.MessageUncheckedUpdateInput> => {
+    if (action === 'decrementCounter') {
+        return { reactionCounter: { decrement: 1 } };
+    } else if (action === 'incrementCounter') {
+        return { reactionCounter: { increment: 1 } };
+    } else {
+        return {}
+    }
 }
