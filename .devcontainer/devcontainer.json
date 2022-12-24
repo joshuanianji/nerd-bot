@@ -7,11 +7,10 @@
   "workspaceFolder": "/workspace",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {},
-    "ghcr.io/devcontainers/features/docker-from-docker:1": {},
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
-      "omzPlugins": "git zsh-autosuggestions zsh-syntax-highlighting"
+      "plugins": "git zsh-autosuggestions zsh-syntax-highlighting"
     }
   },
   "extensions": [
