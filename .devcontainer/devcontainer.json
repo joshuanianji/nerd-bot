@@ -2,7 +2,7 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
   "name": "Nerdbot",
-  "dockerComposeFile": [ "../docker-compose.yml", "docker-compose.yml"],
+  "dockerComposeFile": ["../docker-compose.yml", "docker-compose.yml"],
   "service": "editor",
   "workspaceFolder": "/workspace",
   "features": {
@@ -13,17 +13,13 @@
       "plugins": "git zsh-autosuggestions zsh-syntax-highlighting"
     }
   },
-  "extensions": [
-	"prisma.prisma",
-	"irongeek.vscode-env",
-	"GitHub.copilot"
-],
+  "extensions": ["prisma.prisma", "irongeek.vscode-env", "GitHub.copilot"],
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
 
   // https://www.kenmuse.com/blog/avoiding-dubious-ownership-in-dev-containers/
   // https://github.com/microsoft/vscode-remote-release/issues/6810#issuecomment-1310980232
-  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}"
+  "postStartCommand": "npm i && git config --global --add safe.directory ${containerWorkspaceFolder}"
 
   // Configure tool-specific properties.
   // "customizations": {},
