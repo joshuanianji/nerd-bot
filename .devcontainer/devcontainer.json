@@ -13,7 +13,12 @@
       "plugins": "git zsh-autosuggestions zsh-syntax-highlighting"
     }
   },
-  "extensions": ["prisma.prisma", "irongeek.vscode-env", "GitHub.copilot"],
+  "extensions": [
+	"prisma.prisma",
+	"irongeek.vscode-env",
+	"GitHub.copilot",
+	"alefragnani.Bookmarks"
+],
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
 
