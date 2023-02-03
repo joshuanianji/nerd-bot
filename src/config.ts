@@ -1,10 +1,4 @@
-import { z } from 'zod'
-// defining config, parsed from environment variables
-
-// export const envSchema = z.object({
-//     TOKEN: z.string().min(1)
-
-// });
+import { z } from 'zod';
 
 const Environment = z.discriminatedUnion('ENV', [
     z.object({
@@ -17,7 +11,8 @@ const Environment = z.discriminatedUnion('ENV', [
 
 const Shared = z.object({
     TOKEN: z.string().min(1),
-    WEBHOOK_URL: z.string().min(1)
+    WEBHOOK_URL: z.string().min(1),
+    DEV_ID: z.string().min(1)
 })
 
 export const configSchema = Environment.and(Shared);

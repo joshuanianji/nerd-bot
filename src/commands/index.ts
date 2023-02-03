@@ -6,8 +6,9 @@ import { Collection } from 'discord.js';
 import { vmstat } from './vmstat'
 import { stat } from './stat';
 import { Command } from '../types/command';
+import { botstat } from './botstat';
 
-const importedCmds = [vmstat, stat];
+const importedCmds = [vmstat, stat, botstat];
 
 export const getCommands = (): Collection<string, Command> => {
     const commands = new Collection<string, Command>();
