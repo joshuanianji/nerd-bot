@@ -5,6 +5,7 @@ import { upsertUser } from '../util/upsertUser';
 import Client from './../client';
 import { CommandInteraction } from 'discord.js';
 import { PrismaClient } from '@prisma/client';
+import { getScore } from '../util/getScore';
 
 export const stat: Command = {
     name: 'stat',
@@ -16,13 +17,22 @@ export const stat: Command = {
 
         // first, get user (or create an empty one if they haven't participated yet)
         await upsertUser(intr.user.id, client.prisma);
-
+        await addUserStats(embed, intr.user.id, client.prisma);
         await addMessages(embed, client.prisma, intr);
         await addReactions(embed, client.prisma, intr);
 
         intr.reply({ embeds: [embed] });
         return;
     }
+}
+
+const addUserStats = async (embed: EmbedBuilder, userId: string, prisma: PrismaClient) => {
+    // get score 
+    const score = await getScore(userId, prisma);
+    embed.addFields({
+        name: 'Stats',
+        value: `**Score**: ${score}`
+    });
 }
 
 const addMessages = async (embed: EmbedBuilder, prisma: PrismaClient, intr: CommandInteraction) => {

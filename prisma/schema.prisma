@@ -24,6 +24,7 @@ model Reaction {
     message   Message  @relation(fields: [messageId], references: [id])
     messageId String
     position  Int // first reaction is 0
+    weight    Float // weight is 10% of the reactor's score when initially reacted.
 
     @@id([userId, messageId])
 }
@@ -35,7 +36,7 @@ model Message {
     author          User       @relation(fields: [authorId], references: [id])
     authorId        String
     reactions       Reaction[]
-    reactionCounter Int        @default(0) // auto increments, even if reactions are deleted
+    reactionCounter Int        @default(0) // auto increments, even if reactions are deleted. No other reason than to make it easier lmao
     createdAt       DateTime   @default(now())
 
     @@index([authorId])
