@@ -1,5 +1,6 @@
 import { Message, SlashCommandBuilder } from 'discord.js';
 import Client from '../client';
+import { getScore } from '../util/getScore';
 import { upsertMessage } from '../util/upsertMessage';
 import { upsertUser } from '../util/upsertUser';
 import { log } from './../util/log';
@@ -12,11 +13,11 @@ export const messageCreate = (client: Client, message: Message) => {
     const prisma = client.prisma;
 
     // set up the collector to only react to nerd emojis
-    // also, set collector to run for 5 minutes in prod, and 10 seconds in dev
+    // also, set collector to run for 15 minutes in prod, and 30 seconds in dev
     // whenever someone reacts with 🤓, the collector will reset the timer
     const collector = message.createReactionCollector({
         filter: (reaction, user) => reaction.emoji.name === '🤓' && !user.bot,
-        time: client.config.ENV === 'dev' ? 10_000 : 1000 * 60 * 5,
+        time: client.config.ENV === 'dev' ? 30_000 : 15 * 60 * 1000,
         dispose: true
     });
 
@@ -29,18 +30,25 @@ export const messageCreate = (client: Client, message: Message) => {
             await prisma.$transaction(async tx => {
                 const prismaUser = await upsertUser(user.id, tx);
                 const prismaMsg = await upsertMessage(message, tx, 'incrementCounter');
+                const weight = await getScore(prismaUser.id, tx);
                 // create a new reaction 
                 await tx.reaction.create({
                     data: {
                         user: { connect: { id: prismaUser.id } },
                         message: { connect: { id: prismaMsg.id } },
-                        position: prismaMsg.reactionCounter
+                        position: prismaMsg.reactionCounter,
+                        weight: weight * 0.1
                     }
                 });
             });
 
             log.info(`Collected a new ${reaction.emoji.name} reaction`);
-            collector.resetTimer();
+            // if we get a nerd reaction, reset the timer to 50 minutes in prod, 100 seconds in dev
+            // this is so we wait longer for messages that have a higher "disposition" to be nerd reacted
+            // as often, people react just for the sake of reacting, but it takes more effort to be the first reaction
+            collector.resetTimer({
+                time: client.config.ENV === 'dev' ? 100_000 : 50 * 60 * 1000
+            });
         } catch (e) {
             log.error('Failed to add reaction' + e);
             log.sendError(client.config)('Failed to add reaction!', JSON.stringify(e));

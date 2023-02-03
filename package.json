@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/joshuanianji/anti-ahmad-bot#readme",
   "dependencies": {
-    "@prisma/client": "^4.8.0",
+    "@prisma/client": "^4.8.1",
     "chalk": "^4.1.2",
     "dayjs": "^1.11.7",
     "discord-webhook-node": "^1.1.8",
@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "eslint": "^8.30.0",
-    "prisma": "^4.8.0",
+    "prisma": "^4.8.1",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.9.4"
