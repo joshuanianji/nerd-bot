@@ -30,7 +30,7 @@
     "filesize": "^10.0.6",
     "pretty-ms": "^7.0.1",
     "systeminformation": "^5.16.6",
-    "zod": "^3.20.2"
+    "zod": "^3.20.5"
   },
   "devDependencies": {
     "eslint": "^8.30.0",
