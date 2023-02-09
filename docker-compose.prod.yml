@@ -8,3 +8,13 @@ services:
     restart: ${RESTART_POLICY}
     depends_on:
       - db
+
+  # don't expose ports - we'll manage them via nginx proxy manager
+  # also, we don't need to change anything from docker-compose.yml
+  pgadmin:
+
+    # this network is configured in my digital ocean droplet
+
+networks:
+  default:
+    name: main-network
