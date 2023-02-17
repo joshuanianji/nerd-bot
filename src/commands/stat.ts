@@ -9,21 +9,39 @@ import { getScore } from '../util/getScore';
 
 export const stat: Command = {
     name: 'stat',
-    description: 'Your nerd stats',
+    description: 'Your nerd stats, or someone else\'s nerd stats',
     dm_permission: false,
     run: async (client, intr) => {
+        const user = intr.options.getUser('user') || intr.user;
+
+        if (user.bot) {
+            intr.reply(`Silly ${intr.user.toString()}, bots don't have nerd stats!`);
+            return;
+        }
+
         const embed = new EmbedBuilder()
-            .setTitle(`${intr.user.tag}'s Nerd Stats`);
+            .setTitle(`${user.username}' nerd stats`);
+
+        if (user.id !== intr.user.id) {
+            embed.setDescription(`Requested by ${intr.user.toString()}`);
+        }
 
         // first, get user (or create an empty one if they haven't participated yet)
-        await upsertUser(intr.user.id, client.prisma);
-        await addUserStats(embed, intr.user.id, client.prisma);
+        await upsertUser(user.id, client.prisma);
+        await addUserStats(embed, user.id, client.prisma);
         await addMessages(embed, client.prisma, intr);
         await addReactions(embed, client.prisma, intr);
 
         intr.reply({ embeds: [embed] });
         return;
-    }
+    },
+    // https://stackoverflow.com/a/71050529
+    updateBuilder(builder) {
+        builder.addUserOption(option => option
+            .setName('user')
+            .setDescription('The user to get nerd stats for')
+            .setRequired(false));
+    },
 }
 
 const addUserStats = async (embed: EmbedBuilder, userId: string, prisma: PrismaClient) => {
