@@ -3,14 +3,13 @@ name: Deploy
 on:
   push:
     branches:
-      - main 
-
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: 💻 Configure SSH
@@ -39,9 +38,9 @@ jobs:
 
       - name: 💚 Send Deployment Message on Success
         env:
-          TITLE: '🚀 Deployment Successful!'
+          TITLE: "🚀 Deployment Successful!"
           DESCRIPTION: '**Repo:** ${{ github.repository }}\n\n**Commit Hash:** ${{ github.sha }}'
-          URL: 'https://github.com/joshuanianji/MLH-portfolio-site/commit/${{ github.sha }}'
+          URL: "https://github.com/joshuanianji/MLH-portfolio-site/commit/${{ github.sha }}"
         # The backslashes around double quotes are annoying but if I use single quotes, discord will say the JSON is invalid for some reason
         run: |
           curl \
