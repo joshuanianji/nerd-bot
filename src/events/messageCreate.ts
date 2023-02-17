@@ -13,11 +13,11 @@ export const messageCreate = (client: Client, message: Message) => {
     const prisma = client.prisma;
 
     // set up the collector to only react to nerd emojis
-    // also, set collector to run for 30 minutes in prod, and 30 seconds in dev
+    // also, set collector to run for 2 hours in prod, and 30 seconds in dev
     // whenever someone reacts with 🤓, the collector will reset the timer
     const collector = message.createReactionCollector({
         filter: (reaction, user) => reaction.emoji.name === '🤓' && !user.bot,
-        time: client.config.ENV === 'dev' ? 30_000 : 30 * 60 * 1000,
+        time: client.config.ENV === 'dev' ? 30_000 : 2 * 60 * 60 * 1000,
         dispose: true
     });
 
@@ -43,11 +43,11 @@ export const messageCreate = (client: Client, message: Message) => {
             });
 
             log.info(`Collected a new ${reaction.emoji.name} reaction`);
-            // if we get a nerd reaction, reset the timer to 2 hous in prod, 100 seconds in dev
+            // if we get a nerd reaction, reset the timer to 5 hous in prod, 100 seconds in dev
             // this is so we wait longer for messages that have a higher "disposition" to be nerd reacted
             // as often, people react just for the sake of reacting, but it takes more effort to be the first reaction
             collector.resetTimer({
-                time: client.config.ENV === 'dev' ? 100_000 : 2 * 60 * 60 * 1000
+                time: client.config.ENV === 'dev' ? 100_000 : 5 * 60 * 60 * 1000
             });
         } catch (e) {
             log.error('Failed to add reaction' + e);
