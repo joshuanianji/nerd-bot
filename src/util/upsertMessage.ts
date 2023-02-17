@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, PrismaPromise } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { Message } from 'discord.js';
 import { Message as PrismaMessage } from '@prisma/client';
 import { upsertUser } from './upsertUser';
