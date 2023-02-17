@@ -4,7 +4,9 @@ A discord bot that ranks users based on their nerd score. Calculated by the numb
 
 ## Running Locally
 
-Devcontainers sets up the environment via docker-compose with the following services:
+First, create a `.env.` file in the root of the project by copying the `.env.example` file. Then, fill in the values for the environment variables.
+
+Then, you can open up the project in your devcontainer. Devcontainers sets up the environment via docker-compose with the following services:
 
 - Postgres 15 Database
 - PGAdmin4 v6 (database admin) - accessible via [http://localhost:5050](http://localhost:5050)
