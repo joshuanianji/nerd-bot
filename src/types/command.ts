@@ -1,4 +1,4 @@
-import { ApplicationCommandDataResolvable, CommandInteraction } from 'discord.js';
+import { ApplicationCommandDataResolvable, CommandInteraction, SlashCommandBuilder } from 'discord.js';
 import Client from '../client';
 
 export interface Command {
@@ -7,12 +7,21 @@ export interface Command {
     description: string,
     dm_permission: boolean,
     run: (client: Client, interaction: CommandInteraction) => Promise<void>;
+    // update the slash command builder for custom options
+    updateBuilder?: (builder: SlashCommandBuilder) => void;
 }
 
-export const serialize = ({ name, description, dm_permission }: Command): ApplicationCommandDataResolvable => {
-    // looks like everything you can put in SlashCommandBuilder() should be put here
-    // so NO metadata, and no function
-    // https://discordjs.guide/creating-your-bot/command-deployment.html#guild-commands
-    // https://discordjs.guide/creating-your-bot/command-handling.html#executing-commands
-    return { name, description, dm_permission }
+export const serialize = (cmd: Command): ApplicationCommandDataResolvable => {
+    // discord's SlashCommandBuilder() has a toJSON() method that can serialize it
+
+    const builder = new SlashCommandBuilder()
+        .setName(cmd.name)
+        .setDescription(cmd.description)
+        .setDMPermission(cmd.dm_permission);
+
+    if (cmd.updateBuilder) {
+        cmd.updateBuilder(builder);
+    }
+
+    return builder.toJSON();
 }
