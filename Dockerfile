@@ -9,5 +9,8 @@ COPY package.json package-lock.json prisma ./
 RUN npm ci
 
 COPY . .
-RUN npm run build && npm prune --omit-dev
+# we prune production here to make the size smaller
+# but as a note, prisma is included in the "production" dependencies
+# https://www.prisma.io/docs/guides/deployment/deploy-database-changes-with-prisma-migrate
+RUN npm run build && npm prune --production
 CMD [ "/usr/bin/dumb-init", "--", "node", "build/index.js" ]
