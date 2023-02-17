@@ -4,7 +4,7 @@ A discord bot that ranks users based on their nerd score. Calculated by the numb
 
 ## Running Locally
 
-First, create a `.env.` file in the root of the project by copying the `.env.example` file. Then, fill in the values for the environment variables.
+First, create a `.env` file in the root of the project by copying the `.env.example` file. Then, fill in the values for the empty environment variables.
 
 Then, you can open up the project in your devcontainer. Devcontainers sets up the environment via docker-compose with the following services:
 
@@ -16,3 +16,12 @@ Upon running PGAdmin the first time, add a server with the following settings: (
 
 - Host: `db`
 - Port: `5432`
+
+## Usage
+
+Nerd Bot is configured for the following slash commands:
+
+- `/botstat` - Basic stats about the bot
+- `/vmstat` - Basic stats about the computer running the bot
+- `/stat` - Nerd stats of the user who ran the command
+- `/stat @user` - Nerd stats of the mentioned user
