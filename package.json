@@ -31,7 +31,7 @@
     "pretty-ms": "^7.0.1",
     "prisma": "^4.10.1",
     "systeminformation": "^5.17.9",
-    "zod": "^3.20.5"
+    "zod": "^3.20.6"
   },
   "devDependencies": {
     "ts-node": "^10.9.1",
