@@ -29,8 +29,8 @@ export const stat: Command = {
         // first, get user (or create an empty one if they haven't participated yet)
         await upsertUser(user.id, client.prisma);
         await addUserStats(embed, user.id, client.prisma);
-        await addMessages(embed, client.prisma, intr);
-        await addReactions(embed, client.prisma, intr);
+        await addMessages(embed, user.id, client.prisma);
+        await addReactions(embed, user.id, client.prisma);
 
         intr.reply({ embeds: [embed] });
         return;
@@ -53,39 +53,38 @@ const addUserStats = async (embed: EmbedBuilder, userId: string, prisma: PrismaC
     });
 }
 
-const addMessages = async (embed: EmbedBuilder, prisma: PrismaClient, intr: CommandInteraction) => {
+const addMessages = async (embed: EmbedBuilder, userId: string, prisma: PrismaClient) => {
     // all the messages sent by the user (empty if new user)
     // make sure messages have at least one reaction relation
     // For example, if a user unreacts to a message, the message will still be in the database
     const [messages, messagesPast24h] = await prisma.$transaction([
-        prisma.message.count({
+        // total amount of reactions on the user's messages
+        prisma.reaction.count({
             where: {
-                authorId: intr.user.id,
-                reactions: { some: {} }
+                message: { authorId: userId },
             }
         }),
-        prisma.message.count({
+        prisma.reaction.count({
             where: {
-                authorId: intr.user.id,
+                message: { authorId: userId },
                 createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-                reactions: { some: {} }
             }
         })
     ]);
 
     embed.addFields({
-        name: 'Messages that got Nerd Reacted',
+        name: 'Nerd reactions received',
         value: `**Total**: ${messages},\n**Past 24h**: ${messagesPast24h}`
     });
 }
 
-const addReactions = async (embed: EmbedBuilder, prisma: PrismaClient, intr: CommandInteraction) => {
+const addReactions = async (embed: EmbedBuilder, userId: string, prisma: PrismaClient) => {
     // all the nerd reactions sent by the user
     const [reactions, reactionsPast24h] = await prisma.$transaction([
-        prisma.reaction.count({ where: { userId: intr.user.id } }),
+        prisma.reaction.count({ where: { userId: userId } }),
         prisma.reaction.count({
             where: {
-                userId: intr.user.id,
+                userId: userId,
                 createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
             }
         })
