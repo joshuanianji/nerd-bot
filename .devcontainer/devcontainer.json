@@ -10,17 +10,17 @@
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {},
-	"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
   },
   "customizations": {
     "vscode": {
-        "extensions": [
-			"prisma.prisma",
-			"irongeek.vscode-env",
-			"GitHub.copilot",
-			"alefragnani.Bookmarks",
-			"me-dutour-mathieu.vscode-github-actions"
-		]
+      "extensions": [
+        "prisma.prisma",
+        "irongeek.vscode-env",
+        "GitHub.copilot",
+        "alefragnani.Bookmarks",
+        "me-dutour-mathieu.vscode-github-actions"
+      ]
     }
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.

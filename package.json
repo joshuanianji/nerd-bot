@@ -23,6 +23,8 @@
   "dependencies": {
     "@prisma/client": "^4.10.1",
     "chalk": "^4.1.2",
+    "chart.js": "^3.9.1",
+    "chartjs-node-canvas": "^4.1.6",
     "dayjs": "^1.11.7",
     "discord-webhook-node": "^1.1.8",
     "discord.js": "^14.7.1",
