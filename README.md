@@ -12,6 +12,8 @@ Then, you can open up the project in your devcontainer. Devcontainers sets up th
 
 - Postgres 15 Database
 - PGAdmin4 v6 (database admin) - accessible via [http://localhost:5050](http://localhost:5050)
+    - Username: `admin@admin.com`
+    - Password: `admin`
 - Node 16 (devcontainer workspace)
 
 Upon running PGAdmin the first time, add a server with the following settings: ([source](https://stackoverflow.com/a/51172659))
