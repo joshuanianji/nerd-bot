@@ -15,12 +15,13 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "prisma.prisma",
-        "irongeek.vscode-env",
-        "GitHub.copilot",
-        "alefragnani.Bookmarks",
-        "me-dutour-mathieu.vscode-github-actions"
-      ]
+		"prisma.prisma",
+		"irongeek.vscode-env",
+		"GitHub.copilot",
+		"alefragnani.Bookmarks",
+		"me-dutour-mathieu.vscode-github-actions",
+		"Orta.vscode-twoslash-queries"
+	]
     }
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
