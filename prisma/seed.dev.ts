@@ -6,6 +6,7 @@ const prisma = new PrismaClient()
 async function main() {
     if (process.env.NODE_ENV !== 'development') {
         console.error('Skipping seed, not in development environment');
+        return;
     }
 
     const me_id = '240645351705542658';
