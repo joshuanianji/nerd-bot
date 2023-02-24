@@ -15,7 +15,7 @@ export const getScore = async <P extends Prisma.TransactionClient>(userId: strin
         where: {
             message: { author: { id: userId } }
         }
-    });;
+    });
 
     const scoreAdd = reactionsSent.map(r => r.weight).reduce((a, b) => a + b, 0);
     const scoreSub = reactionsReceived.map(r => r.weight).reduce((a, b) => a + b, 0);

@@ -24,7 +24,9 @@
     "@prisma/client": "^4.10.1",
     "chalk": "^4.1.2",
     "chart.js": "^3.9.1",
+    "chartjs-adapter-date-fns": "^3.0.0",
     "chartjs-node-canvas": "^4.1.6",
+    "date-fns": "^2.29.3",
     "dayjs": "^1.11.7",
     "discord-webhook-node": "^1.1.8",
     "discord.js": "^14.7.1",
@@ -39,5 +41,8 @@
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.9.5"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.dev.ts"
   }
 }
