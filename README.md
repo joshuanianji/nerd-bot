@@ -21,6 +21,14 @@ Upon running PGAdmin the first time, add a server with the following settings: (
 - Host: `db`
 - Port: `5432`
 
+### Seeding the database
+
+Inside `prisma/seed.dev.ts`, there is a small script that does some initial seeding of the database. You can run this script by running the following command (assuming you're okay with resetting the database)
+
+```bash
+NODE_ENV=development npx prisma migrate reset
+```
+
 ## Usage
 
 Nerd Bot is configured for the following slash commands:

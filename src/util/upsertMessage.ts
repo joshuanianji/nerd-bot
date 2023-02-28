@@ -5,6 +5,23 @@ import { upsertUser } from './upsertUser';
 
 type CounterAction = 'incrementCounter' | 'decrementCounter' | 'none';
 
+// not sure about the design pattern here...
+// but inside upsertMessage, I want to pass in a Message<true> type (from discord.js)
+// but in prisma/seed.dev.ts, I don't have access to construct a discord message from scratch
+// so the KindofDiscordMessage serves as a subtype of Message<true> that I can construct myself
+// the good thing is, Message<true> being a supertype means we don't have to change anything in the code
+export type KindofDiscordMessage = {
+    author: KindofDiscordUser,
+    id: string,
+    channelId: string,
+    guildId: string,
+    createdAt: Date,
+}
+
+type KindofDiscordUser = {
+    id: string,
+}
+
 /**
  * Finds a message by its ID (upserting user), and creates one if it doesn't exist.
  * Also, acts upon the counter.
@@ -16,7 +33,7 @@ type CounterAction = 'incrementCounter' | 'decrementCounter' | 'none';
  * @returns PrismaMessage
  */
 export const upsertMessage = async <P extends Prisma.TransactionClient>(
-    message: Message<true>,
+    message: KindofDiscordMessage,
     prisma: P,
     counterAction: CounterAction
 ): Promise<PrismaMessage> => {

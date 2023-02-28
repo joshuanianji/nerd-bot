@@ -1,5 +1,6 @@
 import { Message, SlashCommandBuilder } from 'discord.js';
 import Client from '../client';
+import { addNerdReaction, deleteNerdReaction } from '../util/collectNerdReaction';
 import { getScore } from '../util/getScore';
 import { upsertMessage } from '../util/upsertMessage';
 import { upsertUser } from '../util/upsertUser';
@@ -27,20 +28,7 @@ export const messageCreate = (client: Client, message: Message) => {
 
     collector.on('collect', async (reaction, user) => {
         try {
-            await prisma.$transaction(async tx => {
-                const prismaUser = await upsertUser(user.id, tx);
-                const prismaMsg = await upsertMessage(message, tx, 'incrementCounter');
-                const weight = await getScore(prismaUser.id, tx);
-                // create a new reaction 
-                await tx.reaction.create({
-                    data: {
-                        user: { connect: { id: prismaUser.id } },
-                        message: { connect: { id: prismaMsg.id } },
-                        position: prismaMsg.reactionCounter,
-                        weight: weight * 0.1
-                    }
-                });
-            });
+            await addNerdReaction(user.id, message, prisma)
 
             log.info(`Collected a new ${reaction.emoji.name} reaction`);
             // if we get a nerd reaction, reset the timer to 5 hous in prod, 100 seconds in dev
@@ -57,16 +45,7 @@ export const messageCreate = (client: Client, message: Message) => {
 
     collector.on('dispose', async (reaction, user) => {
         try {
-            await prisma.$transaction(async tx => {
-                const { id: userId } = await upsertUser(user.id, tx);
-                const { id: messageId } = await upsertMessage(message, tx, 'decrementCounter');
-                // delete a new reaction 
-                await tx.reaction.delete({
-                    where: {
-                        userId_messageId: { userId, messageId },
-                    }
-                });
-            })
+            await deleteNerdReaction(user.id, message, prisma);
 
             log.info(`Deleted a ${reaction.emoji.name} reaction`);
             collector.resetTimer();

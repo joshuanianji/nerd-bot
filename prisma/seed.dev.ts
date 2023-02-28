@@ -2,10 +2,13 @@
 // seed the database with some test data
 
 import { PrismaClient } from '@prisma/client'
+import { addNerdReaction } from '../src/util/collectNerdReaction'
+import { KindofDiscordMessage } from '../src/util/upsertMessage';
+
 const prisma = new PrismaClient()
 async function main() {
     if (process.env.NODE_ENV !== 'development') {
-        console.error('Skipping seed, not in development environment');
+        console.error(`Skipping seed, not in development environment (NODE_ENV=${process.env.NODE_ENV})`);
         return;
     }
 
@@ -14,6 +17,40 @@ async function main() {
     const today = new Date();
     const dayInMillis = 1000 * 60 * 60 * 24;
 
+    // create 10 reactions from me_id to messages from other_id, and vice versa
+    // copilot is a life saver for these things
+    // userId: user who created the reaction
+    // msgAuthorId: user who authored the message
+    const REACTIONS = [
+        { userId: me_id, messageId: '1', msgAuthorId: other_id, createdAt: new Date(today.getTime() - dayInMillis * 7) },
+        { userId: me_id, messageId: '2', msgAuthorId: other_id, createdAt: new Date(today.getTime() - dayInMillis * 6) },
+        { userId: me_id, messageId: '3', msgAuthorId: other_id, createdAt: new Date(today.getTime() - dayInMillis * 5) },
+        { userId: me_id, messageId: '4', msgAuthorId: other_id, createdAt: new Date(today.getTime() - dayInMillis * 4) },
+        { userId: me_id, messageId: '5', msgAuthorId: other_id, createdAt: new Date(today.getTime() - dayInMillis * 3) },
+        { userId: me_id, messageId: '6', msgAuthorId: other_id, createdAt: new Date(today.getTime() - dayInMillis * 2) },
+        { userId: me_id, messageId: '7', msgAuthorId: other_id, createdAt: new Date(today.getTime() - dayInMillis * 1) },
+        { userId: me_id, messageId: '8', msgAuthorId: other_id, createdAt: new Date(today.getTime() - dayInMillis * 0) },
+        { userId: me_id, messageId: '9', msgAuthorId: other_id, createdAt: new Date(today.getTime() - dayInMillis * 0.5) },
+        { userId: me_id, messageId: '10', msgAuthorId: other_id, createdAt: new Date(today.getTime() - dayInMillis * 0.25) },
+        { userId: other_id, messageId: '11', msgAuthorId: me_id, createdAt: new Date(today.getTime() - dayInMillis * 7 - 2000) },
+        { userId: other_id, messageId: '12', msgAuthorId: me_id, createdAt: new Date(today.getTime() - dayInMillis * 6 - 2000) },
+        { userId: other_id, messageId: '13', msgAuthorId: me_id, createdAt: new Date(today.getTime() - dayInMillis * 5 - 2000) },
+        { userId: other_id, messageId: '14', msgAuthorId: me_id, createdAt: new Date(today.getTime() - dayInMillis * 4 - 2000) },
+        { userId: other_id, messageId: '15', msgAuthorId: me_id, createdAt: new Date(today.getTime() - dayInMillis * 3 - 2000) },
+        { userId: other_id, messageId: '16', msgAuthorId: me_id, createdAt: new Date(today.getTime() - dayInMillis * 2 - 2000) },
+        { userId: other_id, messageId: '17', msgAuthorId: me_id, createdAt: new Date(today.getTime() - dayInMillis * 1 - 2000) },
+        { userId: other_id, messageId: '18', msgAuthorId: me_id, createdAt: new Date(today.getTime() - dayInMillis * 0 - 2000) },
+        { userId: other_id, messageId: '19', msgAuthorId: me_id, createdAt: new Date(today.getTime() - dayInMillis * 0.5 - 2000) },
+        { userId: other_id, messageId: '20', msgAuthorId: me_id, createdAt: new Date(today.getTime() - dayInMillis * 0.25 - 2000) },
+    ]
+    // sort by ascending order of createdAt
+    REACTIONS.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+    console.log('Adding reactions:')
+    for (const { userId, msgAuthorId, createdAt } of REACTIONS) {
+        console.log(`${userId} reacted to ${msgAuthorId} at ${createdAt}`)
+    }
+
+    // create users `me` and `other`
     const me = await prisma.user.upsert({
         where: { id: me_id },
         update: {},
@@ -21,68 +58,6 @@ async function main() {
             id: me_id,
             openedHelp: false
         },
-    })
-    // create 5 messages from me_id over the course of a week
-    await prisma.message.createMany({
-        skipDuplicates: true,
-        data: [
-            {
-                id: '1',
-                authorId: me_id,
-                channelId: '1',
-                guildId: '1',
-                reactionCounter: 1,
-                createdAt: today
-            },
-            {
-                id: '3',
-                authorId: me_id,
-                channelId: '1',
-                guildId: '1',
-                reactionCounter: 1,
-                createdAt: new Date(today.getTime() - dayInMillis)
-            },
-            {
-                id: '4',
-                authorId: me_id,
-                channelId: '1',
-                guildId: '1',
-                reactionCounter: 1,
-                createdAt: new Date(today.getTime() - dayInMillis * 2)
-            },
-            {
-                id: '5',
-                authorId: me_id,
-                channelId: '1',
-                guildId: '1',
-                reactionCounter: 1,
-                createdAt: new Date(today.getTime() - dayInMillis * 3)
-            },
-            {
-                id: '6',
-                authorId: me_id,
-                channelId: '1',
-                guildId: '1',
-                reactionCounter: 1,
-                createdAt: new Date(today.getTime() - dayInMillis * 4)
-            },
-            {
-                id: '7',
-                authorId: me_id,
-                channelId: '1',
-                guildId: '1',
-                reactionCounter: 1,
-                createdAt: new Date(today.getTime() - dayInMillis * 5)
-            },
-            {
-                id: '8',
-                authorId: me_id,
-                channelId: '1',
-                guildId: '1',
-                reactionCounter: 1,
-                createdAt: new Date(today.getTime() - dayInMillis * 6)
-            },
-        ]
     })
 
     const other = await prisma.user.upsert({
@@ -94,51 +69,27 @@ async function main() {
         },
     })
 
-    // create messages from other
-    await prisma.message.createMany({
-        skipDuplicates: true,
-        data: [
-            {
-                id: '2',
-                authorId: other_id,
+
+    // now, iterate over REACTIONS and run the addNerdReaction function
+    for (const reaction of REACTIONS) {
+        try {
+            const kindofMsg: KindofDiscordMessage = {
+                id: reaction.messageId,
+                author: {
+                    id: reaction.msgAuthorId
+                },
                 channelId: '1',
                 guildId: '1',
-                reactionCounter: 1,
-                createdAt: new Date(),
-            },
-            {
-                id: '9',
-                authorId: other_id,
-                channelId: '1',
-                guildId: '1',
-                reactionCounter: 1,
-                createdAt: new Date(today.getTime() - dayInMillis * 5),
+                // note the createdAt is the same as the reaction createdAt for now
+                // this is fine since we're only handling one reaction per message (and assuming it's the first)
+                createdAt: reaction.createdAt
             }
-        ]
-    })
+            await addNerdReaction(reaction.userId, kindofMsg, prisma);
+        } catch (e) {
+            console.error(`Error adding nerd reaction: ${reaction}`);
+        }
+    }
 
-    // make me react to other
-    await prisma.reaction.createMany({
-        skipDuplicates: true,
-        data: [
-            { userId: me_id, messageId: '1', position: 1, weight: 100, },
-            { userId: me_id, messageId: '9', position: 1, weight: 100, },
-        ]
-    })
-
-    // let other react to me
-    await prisma.reaction.createMany({
-        skipDuplicates: true,
-        data: [
-            { userId: other_id, messageId: '1', position: 1, weight: 100 },
-            { userId: other_id, messageId: '3', position: 1, weight: 100 },
-            { userId: other_id, messageId: '4', position: 1, weight: 100 },
-            { userId: other_id, messageId: '5', position: 1, weight: 100 },
-            { userId: other_id, messageId: '6', position: 1, weight: 100 },
-            { userId: other_id, messageId: '7', position: 1, weight: 100 },
-            { userId: other_id, messageId: '8', position: 1, weight: 100 }
-        ]
-    })
     console.log({ me, other })
 }
 main()
