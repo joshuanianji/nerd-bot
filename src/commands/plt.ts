@@ -2,7 +2,6 @@ import { Command } from '../types/command';
 import si from 'systeminformation';
 import { EmbedBuilder } from '@discordjs/builders';
 import { upsertUser } from '../util/upsertUser';
-import Client from './../client';
 import { AttachmentBuilder, CommandInteraction } from 'discord.js';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { getScore } from '../util/getScore';
@@ -39,12 +38,19 @@ export const plt: Command = {
 
         // first, get user (or create an empty one if they haven't participated yet)
         // the process of setting an image created via an attachmentBuilder on an embed is kinda weird...
-        const pltBuffer = await getScorePlot(user.id, client.prisma);
-        const file = new AttachmentBuilder(pltBuffer, {
-            name: `${user.id}-nerd-score.png`,
-            description: `Nerd score plot for ${user.username}`,
-        });
-        embed.setImage(`attachment://${user.id}-nerd-score.png`);
+        try {
+            const pltBuffer = await getScorePlot(user.id, client.prisma);
+            const file = new AttachmentBuilder(pltBuffer, {
+                name: `${user.id}-nerd-score.png`,
+                description: `Nerd score plot for ${user.username}`,
+            });
+            embed.setImage(`attachment://${user.id}-nerd-score.png`);
+        } catch (error) {
+            console.log(error)
+            embed.setDescription(`Error generating nerd score plot for ${user.username}!`);
+            intr.reply({ embeds: [embed] });
+            return;
+        }
 
         intr.reply({ embeds: [embed], files: [file] });
         return;
