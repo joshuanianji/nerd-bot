@@ -1,4 +1,4 @@
-import { Client, ClientOptions, Collection, ThreadAutoArchiveDuration } from 'discord.js';
+import { Client, ClientOptions, Collection } from 'discord.js';
 import { Config } from './config.js';
 import { Command } from './types/command.js';
 import { getCommands } from './commands.js';
