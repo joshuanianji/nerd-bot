@@ -1,8 +1,8 @@
 import { Client, ClientOptions, Collection, ThreadAutoArchiveDuration } from 'discord.js';
-import { Config } from './config';
-import { Command } from './types/command';
-import { getCommands } from './commands';
-import { log } from './util/log';
+import { Config } from './config.js';
+import { Command } from './types/command.js';
+import { getCommands } from './commands.js';
+import { log } from './util/log.js';
 import chalk from 'chalk';
 import { Prisma, PrismaClient } from '@prisma/client';
 

@@ -1,12 +1,15 @@
-import 'chartjs-adapter-date-fns';
-import { Prisma, Reaction } from '@prisma/client';
-import { ChartConfiguration, ChartTypeRegistry, ChartDataset, ScatterDataPoint, BubbleDataPoint, _adapters } from 'chart.js';
-import 'chartjs-adapter-date-fns';
+import { Prisma } from '@prisma/client';
+import Chart from 'chart.js';
 import { ChartJSNodeCanvas, ChartCallback } from 'chartjs-node-canvas';
-import { log } from './log';
+import { dateFnsAdapter } from './chartjsDateAdapter.js';
+// import 'chartjs-adapter-date-fns';
 
 
 export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: string, client: P): Promise<Buffer> => {
+    // HACK HACK HACK HACK HACK
+    // https://github.com/chartjs/chartjs-adapter-date-fns/issues/58
+    Chart._adapters._date.override(dateFnsAdapter);
+
 
     // this code is kinda messy, but the first part emulates the getScore function
     // we get all the reactions sent and received, and we just want to put them in one big array, sorted by date
@@ -42,7 +45,7 @@ export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: s
     const height = 350;
 
     // example line chart
-    const configuration: ChartConfiguration = {
+    const configuration: Chart.ChartConfiguration = {
         type: 'line',
         data: {
             datasets: [{
@@ -54,10 +57,7 @@ export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: s
                 x: {
                     type: 'time',
                     adapters: {
-                        // use date-fns
-                        date: {
-                            locale: de,
-                        }
+                        // use date-fns (should be automatic?)
                     }
                 }
             }

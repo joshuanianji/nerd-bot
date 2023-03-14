@@ -1,7 +1,6 @@
 import { Prisma } from '@prisma/client';
-import { Message } from 'discord.js';
 import { Message as PrismaMessage } from '@prisma/client';
-import { upsertUser } from './upsertUser';
+import { upsertUser } from './upsertUser.js';
 
 type CounterAction = 'incrementCounter' | 'decrementCounter' | 'none';
 

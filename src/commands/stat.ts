@@ -1,11 +1,8 @@
-import { Command } from '../types/command';
-import si from 'systeminformation';
+import { Command } from '../types/command.js';
 import { EmbedBuilder } from '@discordjs/builders';
-import { upsertUser } from '../util/upsertUser';
-import Client from './../client';
-import { CommandInteraction } from 'discord.js';
+import { upsertUser } from '../util/upsertUser.js';
 import { PrismaClient } from '@prisma/client';
-import { getScore } from '../util/getScore';
+import { getScore } from '../util/getScore.js';
 
 export const stat: Command = {
     name: 'stat',

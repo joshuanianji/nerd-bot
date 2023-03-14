@@ -1,11 +1,7 @@
-import { Command } from '../types/command';
-import si from 'systeminformation';
+import { Command } from '../types/command.js';
 import { EmbedBuilder } from '@discordjs/builders';
-import { upsertUser } from '../util/upsertUser';
-import { AttachmentBuilder, CommandInteraction } from 'discord.js';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { getScore } from '../util/getScore';
-import { getScorePlot } from '../util/getScorePlot';
+import { AttachmentBuilder } from 'discord.js';
+import { getScorePlot } from '../util/getScorePlot.js';
 
 export const plt: Command = {
     name: 'plt',
@@ -45,15 +41,13 @@ export const plt: Command = {
                 description: `Nerd score plot for ${user.username}`,
             });
             embed.setImage(`attachment://${user.id}-nerd-score.png`);
+            intr.reply({ embeds: [embed], files: [file] });
         } catch (error) {
             console.log(error)
             embed.setDescription(`Error generating nerd score plot for ${user.username}!`);
             intr.reply({ embeds: [embed] });
             return;
         }
-
-        intr.reply({ embeds: [embed], files: [file] });
-        return;
     },
     // https://stackoverflow.com/a/71050529
     updateBuilder(builder) {

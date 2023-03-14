@@ -1,8 +1,7 @@
 import { Prisma, Reaction } from '@prisma/client';
-import { Message } from 'discord.js';
-import { getScore } from './getScore';
-import { KindofDiscordMessage, upsertMessage } from './upsertMessage';
-import { upsertUser } from './upsertUser';
+import { getScore } from './getScore.js';
+import { KindofDiscordMessage, upsertMessage } from './upsertMessage.js';
+import { upsertUser } from './upsertUser.js';
 
 /**
  * 
