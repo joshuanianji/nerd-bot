@@ -7,9 +7,7 @@
   "workspaceFolder": "/workspace",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {},
-    "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {},
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
   },
   "customizations": {
@@ -26,10 +24,7 @@
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
-
-  // https://www.kenmuse.com/blog/avoiding-dubious-ownership-in-dev-containers/
-  // https://github.com/microsoft/vscode-remote-release/issues/6810#issuecomment-1310980232
-  "postStartCommand": "npm i && git config --global --add safe.directory ${containerWorkspaceFolder}"
+  "postStartCommand": "npm i"
 
   // Configure tool-specific properties.
   // "customizations": {},
