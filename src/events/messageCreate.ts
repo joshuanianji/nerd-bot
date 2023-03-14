@@ -1,10 +1,7 @@
-import { Message, SlashCommandBuilder } from 'discord.js';
-import Client from '../client';
-import { addNerdReaction, deleteNerdReaction } from '../util/collectNerdReaction';
-import { getScore } from '../util/getScore';
-import { upsertMessage } from '../util/upsertMessage';
-import { upsertUser } from '../util/upsertUser';
-import { log } from './../util/log';
+import { Message } from 'discord.js';
+import Client from '../client.js';
+import { addNerdReaction, deleteNerdReaction } from '../util/collectNerdReaction.js';
+import { log } from './../util/log.js';
 
 export const messageCreate = (client: Client, message: Message) => {
     // only works in guilds
