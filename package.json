@@ -2,7 +2,8 @@
   "name": "nerd-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "exports": "./build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --exit-child --transpile-only src/index.ts",
@@ -28,7 +29,6 @@
     "chartjs-node-canvas": "^4.1.6",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.7",
-    "discord-webhook-node": "^1.1.8",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
     "filesize": "^10.0.6",
@@ -44,5 +44,8 @@
   },
   "prisma": {
     "seed": "ts-node prisma/seed.dev.ts"
+  },
+  "engines": {
+    "node": ">=14.16"
   }
 }

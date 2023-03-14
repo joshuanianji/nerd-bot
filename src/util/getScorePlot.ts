@@ -1,9 +1,9 @@
-import 'chartjs-adapter-date-fns';
+import 'chartjs-adapter-date-fns.js';
 import { Prisma, Reaction } from '@prisma/client';
 import { ChartConfiguration, ChartTypeRegistry, ChartDataset, ScatterDataPoint, BubbleDataPoint, _adapters } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import { ChartJSNodeCanvas, ChartCallback } from 'chartjs-node-canvas';
-import { log } from './log';
+import { log } from './log.js';
 
 
 export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: string, client: P): Promise<Buffer> => {
@@ -54,10 +54,7 @@ export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: s
                 x: {
                     type: 'time',
                     adapters: {
-                        // use date-fns
-                        date: {
-                            locale: de,
-                        }
+                        // use date-fns (should be automatic?)
                     }
                 }
             }

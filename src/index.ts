@@ -1,11 +1,11 @@
 import { Events, GatewayIntentBits } from 'discord.js';
-import Client from './client';
-import { ready } from './events/ready';
-import { log } from './util/log';
+import Client from './client.js';
+import { ready } from './events/ready.js';
+import { log } from './util/log.js';
 import dotenv from 'dotenv';
-import { configSchema } from './config';
-import { interactionCreate } from './events/interactionCreate';
-import { messageCreate } from './events/messageCreate';
+import { configSchema } from './config.js';
+import { interactionCreate } from './events/interactionCreate.js';
+import { messageCreate } from './events/messageCreate.js';
 
 // read env vars
 // https://sergiodxa.com/articles/using-zod-to-safely-read-env-variables
