@@ -1,3 +1,8 @@
+// @ts-nocheck
+// this file is directly copy-pasted from a gigachad to solve an import issue
+// https://github.com/chartjs/chartjs-adapter-date-fns/issues/58
+// i had to change it to a `.ts` file to get it to work, and i'm using ts-nocheck because i don't know what i'm doing
+
 import {
     parse, parseISO, toDate, isValid, format,
     startOfSecond, startOfMinute, startOfHour, startOfDay,
