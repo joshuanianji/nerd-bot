@@ -12,12 +12,25 @@ Then, you can open up the project in your devcontainer. Devcontainers sets up th
 
 - Postgres 15 Database
 - PGAdmin4 v6 (database admin) - accessible via [http://localhost:5050](http://localhost:5050)
+    - Username: `admin@admin.com`
+    - Password: `admin`
 - Node 16 (devcontainer workspace)
 
 Upon running PGAdmin the first time, add a server with the following settings: ([source](https://stackoverflow.com/a/51172659))
 
-- Host: `db`
-- Port: `5432`
+- Name: whatever you want
+- Connection > Host: `db`
+- Connection > Port: `5432`
+- Connection > User: `postgres`
+- Connection > Password: `admin`
+
+### Seeding the database
+
+Inside `prisma/seed.dev.ts`, there is a small script that does some initial seeding of the database. You can run this script by running the following command (assuming you're okay with resetting the database)
+
+```bash
+NODE_ENV=development npx prisma migrate reset
+```
 
 ## Usage
 

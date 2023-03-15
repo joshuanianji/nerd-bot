@@ -1,5 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// seed data for testing
+// run with `npx prisma db seed`
 
 generator client {
     provider = "prisma-client-js"
@@ -14,7 +14,7 @@ model User {
     id         String     @id
     openedHelp Boolean    @default(false)
     reactions  Reaction[]
-    Message    Message[]
+    messages   Message[]
 }
 
 model Reaction {

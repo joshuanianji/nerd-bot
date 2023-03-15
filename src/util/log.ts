@@ -1,10 +1,30 @@
+import { EmbedBuilder } from '@discordjs/builders';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
-import { Webhook } from 'discord-webhook-node';
-import { Config } from '../config';
+import { WebhookClient } from 'discord.js';
+
+import { Config } from '../config.js';
 
 const getTime = () => {
     return chalk.bold.gray(dayjs().format('HH:mm:ss.SSS'))
+}
+
+const sendWebhook = async (webhookUrl: string, type: 'error' | 'info', title: string, name: string, value: string) => {
+    const webhookClient = new WebhookClient({ url: webhookUrl });
+
+    // colours gotten straight from https://github.com/matthew1232/discord-webhook-node
+    const color = type === 'error' ? 16729149 : 4037805;
+
+    const embed = new EmbedBuilder()
+        .setTitle('title')
+        .setColor(color)
+        .addFields({ name, value })
+
+    webhookClient.send({
+        content: 'Nerd bot Logs',
+        username: 'Nerdbot',
+        embeds: [embed],
+    });
 }
 
 // simple commands for logging to the console. Maybe i'll implement better logging later on.
@@ -27,8 +47,7 @@ export namespace log {
         console.log(`${getTime()} [${chalk.bold.red('SEND ERROR')}]${extraInfo} ${title}\n${err}`);
         if (config.ENV === 'dev') return;
 
-        const hook = new Webhook(config.WEBHOOK_URL);
-        hook.error('**Nerdbot Failure!**', title, err)
+        sendWebhook(config.WEBHOOK_URL, 'error', '**Nerdbot Failure!**', title, err)
             .catch(err => error("Log also failed to send!" + err));
     }
 
@@ -38,8 +57,7 @@ export namespace log {
         console.log(`${getTime()} [${chalk.bold.yellow('SEND INFO')}]${extraInfo} ${title}\n${msg}`);
         if (config.ENV === 'dev') return;
 
-        const hook = new Webhook(config.WEBHOOK_URL);
-        hook.info('**Nerdbot Info!**', title, msg)
+        sendWebhook(config.WEBHOOK_URL, 'info', '**Nerdbot Info!**', title, msg)
             .catch(err => error("Log also failed to send!" + err));
     }
 }

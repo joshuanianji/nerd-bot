@@ -1,7 +1,9 @@
 version: '3.9'
 services:
   editor:
-    image: 'mcr.microsoft.com/devcontainers/javascript-node:0-16-bullseye'
+    build:
+      context: .
+      dockerfile: .devcontainer/editor.Dockerfile
     volumes:
       - ./:/workspace:cached
     command: /bin/sh -c "while sleep 1000; do :; done"
