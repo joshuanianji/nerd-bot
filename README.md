@@ -4,6 +4,17 @@ A discord bot that ranks users based on their nerd score. Calculated by the numb
 
 Written in Typescript, using Prisma + Postgres. Currently deployed to my Digital Ocean Droplet.
 
+## Features
+
+Nerd Bot is configured for the following slash commands:
+
+- `/botstat` - Basic stats about the bot
+- `/vmstat` - Basic stats about the computer running the bot
+- `/stat` - Nerd stats of the user who ran the command
+- `/stat @user` - Nerd stats of the mentioned user
+- `/plt` - Plots the nerd stats over time of the user who ran the command
+- `/plt @user` - Plots the nerd stats over time of the mentioned user
+
 ## Running Locally
 
 First, create a `.env` file in the root of the project by copying the `.env.example` file. Then, fill in the values for the empty environment variables.
@@ -31,12 +42,3 @@ Inside `prisma/seed.dev.ts`, there is a small script that does some initial seed
 ```bash
 NODE_ENV=development npx prisma migrate reset
 ```
-
-## Usage
-
-Nerd Bot is configured for the following slash commands:
-
-- `/botstat` - Basic stats about the bot
-- `/vmstat` - Basic stats about the computer running the bot
-- `/stat` - Nerd stats of the user who ran the command
-- `/stat @user` - Nerd stats of the mentioned user
