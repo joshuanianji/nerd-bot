@@ -35,7 +35,8 @@ export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: s
     // To make it actually visible, I'll set it to appear before the first point on the graph, 1/25th of the total time away
     const firstReaction = reactions[0].reaction.createdAt.getTime();
     const lastReaction = reactions[reactions.length - 1].reaction.createdAt.getTime();
-    const initialTime = new Date(firstReaction - (lastReaction - firstReaction) / 25);
+    // subtracting 1 second in the case that the user only has one reaction
+    const initialTime = new Date(firstReaction - (lastReaction - firstReaction) / 25 - 1000);
 
     // here, we finally collect the data
     const data = [{ y: 1000, x: initialTime.getTime() }];
@@ -68,7 +69,7 @@ export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: s
                     type: 'time',
                     time: {
                         displayFormats: {
-                            millisecond: 'MM dd HH:mm:ss.SSS',
+                            millisecond: 'mm:ss.SSS',
                             second: 'HH:mm:ss',
                             minute: 'HH:mm',
                             hour: 'mm/dd HH:mm',
