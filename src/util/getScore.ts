@@ -1,4 +1,4 @@
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 /**
  * Returns the score of a user, based on all reactions and their weights
