@@ -18,7 +18,7 @@ async function main() {
     const dayInMillis = 1000 * 60 * 60 * 24;
 
     // create 10 reactions from me_id to messages from other_id, and vice versa
-    // copilot is a life saver for these things
+    // copilot is a life saver for these things. Maybe I should have been more dry though?
     // userId: user who created the reaction
     // msgAuthorId: user who authored the message
     const REACTIONS = [

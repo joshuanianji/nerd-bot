@@ -21,7 +21,8 @@ export const addNerdReaction = async <P extends Prisma.TransactionClient>(
             user: { connect: { id: prismaUser.id } },
             message: { connect: { id: prismaMsg.id } },
             position: prismaMsg.reactionCounter,
-            weight: weight * 0.1
+            weight: weight * 0.1,
+            createdAt: msg.createdAt
         }
     });
 }
