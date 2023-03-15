@@ -15,6 +15,7 @@ import {
     endOfSecond, endOfMinute, endOfHour, endOfDay,
     endOfWeek, endOfMonth, endOfQuarter, endOfYear
 } from 'date-fns';
+import { _adapters } from 'chart.js';
 
 const FORMATS = {
     datetime: 'MMM d, yyyy, h:mm:ss aaaa',
@@ -29,14 +30,16 @@ const FORMATS = {
     year: 'yyyy'
 };
 
-export const dateFnsAdapter = {
+const dateFnsAdapter = {
     _id: 'date-fns', // DEBUG
 
-    formats: function () {
+    formats: () => {
+        // console.log('Called dateFnsAdapter.formats()')
         return FORMATS;
     },
 
     parse: function (value, fmt) {
+        // console.log('Called dateFnsAdapter.parse()', value, fmt)
         if (value === null || typeof value === 'undefined') {
             return null;
         }
@@ -54,10 +57,12 @@ export const dateFnsAdapter = {
     },
 
     format: function (time, fmt) {
+        // console.log('Called dateFnsAdapter.format()', time, fmt)
         return format(time, fmt, this.options);
     },
 
     add: function (time, amount, unit) {
+        // console.log('Called dateFnsAdapter.add()', time, amount, unit)
         switch (unit) {
             case 'millisecond': return addMilliseconds(time, amount);
             case 'second': return addSeconds(time, amount);
@@ -73,6 +78,7 @@ export const dateFnsAdapter = {
     },
 
     diff: function (max, min, unit) {
+        // console.log('Called dateFnsAdapter.diff()', max, min, unit)
         switch (unit) {
             case 'millisecond': return differenceInMilliseconds(max, min);
             case 'second': return differenceInSeconds(max, min);
@@ -88,6 +94,7 @@ export const dateFnsAdapter = {
     },
 
     startOf: function (time, unit, weekday) {
+        // console.log('Called dateFnsAdapter.startOf()', time, unit, weekday)
         switch (unit) {
             case 'second': return startOfSecond(time);
             case 'minute': return startOfMinute(time);
@@ -103,6 +110,7 @@ export const dateFnsAdapter = {
     },
 
     endOf: function (time, unit) {
+        // console.log('Called dateFnsAdapter.endOf()', time, unit)
         switch (unit) {
             case 'second': return endOfSecond(time);
             case 'minute': return endOfMinute(time);
@@ -116,3 +124,6 @@ export const dateFnsAdapter = {
         }
     }
 };
+
+export { dateFnsAdapter };
+// _adapters._date.override(dateFnsAdapter);

@@ -4,7 +4,8 @@ import { Command } from './types/command.js';
 import { getCommands } from './commands.js';
 import { log } from './util/log.js';
 import chalk from 'chalk';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { ChartCallback, ChartJSNodeCanvas } from 'chartjs-node-canvas';
 
 // incorporating the "ready" status for slightly better type inference in certain situations
 class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
@@ -19,6 +20,12 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
 
     private _prisma: PrismaClient;
 
+    // multiple chartJsNodeCanvas objects will result in the date adapter erroring out
+    // https://github.com/SeanSobey/ChartjsNodeCanvas/issues/96
+    // to simplify things, I will just use one instance of the chartJsNodeCanvas object
+    // alos, the solution mentioned does not work for esm lol
+    private _chartJsNodeCanvas: ChartJSNodeCanvas;
+
     constructor(options: ClientOptions, config: Config) {
         super(options);
 
@@ -30,6 +37,14 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
         this._reactionCollectors = 0;
 
         this._prisma = new PrismaClient();
+
+        const chartCallback: ChartCallback = (ChartJS) => {
+            ChartJS.defaults.responsive = false;
+            ChartJS.defaults.maintainAspectRatio = false;
+        };
+        const width = 600;
+        const height = 350;
+        this._chartJsNodeCanvas = new ChartJSNodeCanvas({ width, height, chartCallback });
     }
 
     public async init() {
@@ -53,6 +68,7 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
         this._reactionCollectors += 1;
     }
 
+    // using oop getters and setters even though they are not necessary lol
     get reactionCollectors(): number {
         return this._reactionCollectors;
     }
@@ -67,6 +83,10 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
 
     get prisma(): PrismaClient {
         return this._prisma;
+    }
+
+    get chartJsNodeCanvas(): ChartJSNodeCanvas {
+        return this._chartJsNodeCanvas;
     }
 }
 

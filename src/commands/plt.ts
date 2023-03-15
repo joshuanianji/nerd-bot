@@ -35,7 +35,7 @@ export const plt: Command = {
         // first, get user (or create an empty one if they haven't participated yet)
         // the process of setting an image created via an attachmentBuilder on an embed is kinda weird...
         try {
-            const pltBuffer = await getScorePlot(user.id, client.prisma);
+            const pltBuffer = await getScorePlot(user.id, client.prisma, client.chartJsNodeCanvas);
             const file = new AttachmentBuilder(pltBuffer, {
                 name: `${user.id}-nerd-score.png`,
                 description: `Nerd score plot for ${user.username}`,

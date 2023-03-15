@@ -1,15 +1,19 @@
 import { Prisma } from '@prisma/client';
+import { log } from './log.js';
 import Chart from 'chart.js';
-import { ChartJSNodeCanvas, ChartCallback } from 'chartjs-node-canvas';
 import { dateFnsAdapter } from './chartjsDateAdapter.js';
-// import 'chartjs-adapter-date-fns';
+import { ChartJSNodeCanvas } from 'chartjs-node-canvas';
+import { de } from 'date-fns/locale';
 
 
-export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: string, client: P): Promise<Buffer> => {
+export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: string, client: P, canvas: ChartJSNodeCanvas): Promise<Buffer> => {
     // HACK HACK HACK HACK HACK
     // https://github.com/chartjs/chartjs-adapter-date-fns/issues/58
+    // also, importing `chartjs-adapter-date-fns` as intended gives us an error:
+    // `The requested module 'chart.js' does not provide an export named '_adapters'`
     Chart._adapters._date.override(dateFnsAdapter);
 
+    log.info(`getting score plot for user ${userId}`)
 
     // this code is kinda messy, but the first part emulates the getScore function
     // we get all the reactions sent and received, and we just want to put them in one big array, sorted by date
@@ -41,10 +45,13 @@ export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: s
         data.push({ y: score, x: reaction.reaction.createdAt.getMilliseconds() });
     }
 
+    console.log(data)
+
     const width = 600;
     const height = 350;
 
     // example line chart
+    log.info('Collected data. Generating chart...')
     const configuration: Chart.ChartConfiguration = {
         type: 'line',
         data: {
@@ -57,17 +64,22 @@ export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: s
                 x: {
                     type: 'time',
                     adapters: {
-                        // use date-fns (should be automatic?)
+                        date: de
                     }
                 }
             }
-        }
-
+        },
+        plugins: [{
+            id: 'background-colour',
+            beforeDraw: (chart) => {
+                const ctx = chart.ctx;
+                ctx.save();
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, width, height);
+                ctx.restore();
+            }
+        }]
     };
-    const chartCallback: ChartCallback = (ChartJS) => {
-        ChartJS.defaults.responsive = true;
-        ChartJS.defaults.maintainAspectRatio = false;
-    };
-    const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, chartCallback });
-    return chartJSNodeCanvas.renderToBuffer(configuration);
+    log.info('Rendering chart...')
+    return canvas.renderToBuffer(configuration);
 }
