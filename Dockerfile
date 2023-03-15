@@ -13,4 +13,4 @@ COPY . .
 # but as a note, prisma is included in the "production" dependencies
 # https://www.prisma.io/docs/guides/deployment/deploy-database-changes-with-prisma-migrate
 RUN npm run build && npm prune --production
-CMD [ "/usr/bin/dumb-init", "--", "node", "build/index.js" ]
+CMD [ "/usr/bin/dumb-init", "--", "node", "--es-module-specifier-resolution=node", "build/index.js" ]
