@@ -18,8 +18,11 @@ Then, you can open up the project in your devcontainer. Devcontainers sets up th
 
 Upon running PGAdmin the first time, add a server with the following settings: ([source](https://stackoverflow.com/a/51172659))
 
-- Host: `db`
-- Port: `5432`
+- Name: whatever you want
+- Connection > Host: `db`
+- Connection > Port: `5432`
+- Connection > User: `postgres`
+- Connection > Password: `admin`
 
 ### Seeding the database
 
