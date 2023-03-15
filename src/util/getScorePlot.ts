@@ -31,10 +31,14 @@ export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: s
     const reactions = [...sentGeneral, ...receivedGeneral];
     reactions.sort((a, b) => a.reaction.createdAt.getTime() - b.reaction.createdAt.getTime());
 
-    console.log(reactions)
+    // now, I want to initialize the `data` array with an "initial" point of 1000
+    // To make it actually visible, I'll set it to appear before the first point on the graph, 1/25th of the total time away
+    const firstReaction = reactions[0].reaction.createdAt.getTime();
+    const lastReaction = reactions[reactions.length - 1].reaction.createdAt.getTime();
+    const initialTime = new Date(firstReaction - (lastReaction - firstReaction) / 25);
 
     // here, we finally collect the data
-    const data = [];
+    const data = [{ y: 1000, x: initialTime.getTime() }];
     let score = 1000;
     for (const { type, reaction } of reactions) {
         if (type === 'additive') {
