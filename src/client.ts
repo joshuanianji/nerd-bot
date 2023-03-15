@@ -6,6 +6,7 @@ import { log } from './util/log.js';
 import chalk from 'chalk';
 import { PrismaClient } from '@prisma/client';
 import { ChartCallback, ChartJSNodeCanvas } from 'chartjs-node-canvas';
+import { Canvas, mkCanvas } from './types/canvas.js';
 
 // incorporating the "ready" status for slightly better type inference in certain situations
 class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
@@ -24,7 +25,7 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
     // https://github.com/SeanSobey/ChartjsNodeCanvas/issues/96
     // to simplify things, I will just use one instance of the chartJsNodeCanvas object
     // alos, the solution mentioned does not work for esm lol
-    private _chartJsNodeCanvas: ChartJSNodeCanvas;
+    private _canvas: Canvas;
 
     constructor(options: ClientOptions, config: Config) {
         super(options);
@@ -41,10 +42,11 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
         const chartCallback: ChartCallback = (ChartJS) => {
             ChartJS.defaults.responsive = false;
             ChartJS.defaults.maintainAspectRatio = false;
+            ChartJS.defaults.devicePixelRatio = 2;
         };
         const width = 600;
         const height = 350;
-        this._chartJsNodeCanvas = new ChartJSNodeCanvas({ width, height, chartCallback });
+        this._canvas = mkCanvas(width, height, chartCallback);
     }
 
     public async init() {
@@ -85,8 +87,8 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
         return this._prisma;
     }
 
-    get chartJsNodeCanvas(): ChartJSNodeCanvas {
-        return this._chartJsNodeCanvas;
+    get canvas(): Canvas {
+        return this._canvas;
     }
 }
 

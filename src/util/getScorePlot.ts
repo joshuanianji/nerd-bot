@@ -2,18 +2,16 @@ import { Prisma } from '@prisma/client';
 import { log } from './log.js';
 import Chart from 'chart.js';
 import { dateFnsAdapter } from './chartjsDateAdapter.js';
-import { ChartJSNodeCanvas } from 'chartjs-node-canvas';
 import { de } from 'date-fns/locale';
+import { Canvas } from '../types/canvas.js';
 
 
-export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: string, client: P, canvas: ChartJSNodeCanvas): Promise<Buffer> => {
+export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: string, client: P, canvas: Canvas): Promise<Buffer> => {
     // HACK HACK HACK HACK HACK
     // https://github.com/chartjs/chartjs-adapter-date-fns/issues/58
     // also, importing `chartjs-adapter-date-fns` as intended gives us an error:
     // `The requested module 'chart.js' does not provide an export named '_adapters'`
     Chart._adapters._date.override(dateFnsAdapter);
-
-    log.info(`getting score plot for user ${userId}`)
 
     // this code is kinda messy, but the first part emulates the getScore function
     // we get all the reactions sent and received, and we just want to put them in one big array, sorted by date
@@ -33,36 +31,50 @@ export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: s
     const reactions = [...sentGeneral, ...receivedGeneral];
     reactions.sort((a, b) => a.reaction.createdAt.getTime() - b.reaction.createdAt.getTime());
 
+    console.log(reactions)
+
     // here, we finally collect the data
     const data = [];
     let score = 1000;
-    for (const reaction of reactions) {
-        if (reaction.type === 'additive') {
-            score += reaction.reaction.weight;
+    for (const { type, reaction } of reactions) {
+        if (type === 'additive') {
+            score += reaction.weight;
         } else {
-            score -= reaction.reaction.weight;
+            score -= reaction.weight;
         }
-        data.push({ y: score, x: reaction.reaction.createdAt.getMilliseconds() });
+        data.push({ y: score, x: reaction.createdAt.getTime() });
     }
 
-    console.log(data)
-
-    const width = 600;
-    const height = 350;
-
     // example line chart
-    log.info('Collected data. Generating chart...')
     const configuration: Chart.ChartConfiguration = {
         type: 'line',
         data: {
             datasets: [{
-                data: data
+                data: data,
+                backgroundColor: '#000',
+                borderColor: '#000',
+                label: 'Nerd score',
+                borderWidth: 2,
+                pointRadius: 0
             }]
         },
         options: {
             scales: {
                 x: {
                     type: 'time',
+                    time: {
+                        displayFormats: {
+                            millisecond: 'MM dd HH:mm:ss.SSS',
+                            second: 'HH:mm:ss',
+                            minute: 'HH:mm',
+                            hour: 'mm/dd HH:mm',
+                            day: 'MM/dd',
+                            week: 'yyyy/MM/dd',
+                            month: 'yyyy/MM',
+                            quarter: 'yyyy/MM',
+                            year: 'yyyy'
+                        }
+                    },
                     adapters: {
                         date: de
                     }
@@ -75,11 +87,10 @@ export const getScorePlot = async <P extends Prisma.TransactionClient>(userId: s
                 const ctx = chart.ctx;
                 ctx.save();
                 ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, width, height);
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.restore();
             }
         }]
     };
-    log.info('Rendering chart...')
-    return canvas.renderToBuffer(configuration);
+    return canvas.chartJSNodeCanvas.renderToBuffer(configuration);
 }
