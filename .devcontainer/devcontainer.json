@@ -24,7 +24,16 @@
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
-  "postStartCommand": "npm i"
+  "postStartCommand": "npm i",
+
+  // make the github CLI auth token persist across restarts
+  "mounts": [
+    {
+        "source": "devcontainer-gh-cli-${devcontainerId}",
+        "target": "/home/node/.config/gh",
+        "type": "volume"
+    }
+  ]
 
   // Configure tool-specific properties.
   // "customizations": {},
