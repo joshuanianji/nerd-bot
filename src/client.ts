@@ -5,7 +5,7 @@ import { getCommands } from './commands.js';
 import { log } from './util/log.js';
 import chalk from 'chalk';
 import { PrismaClient } from '@prisma/client';
-import { ChartCallback, ChartJSNodeCanvas } from 'chartjs-node-canvas';
+import { ChartCallback } from 'chartjs-node-canvas';
 import { Canvas, mkCanvas } from './types/canvas.js';
 
 // incorporating the "ready" status for slightly better type inference in certain situations
