@@ -47,6 +47,6 @@
     "seed": "tsx prisma/seed.dev.ts"
   },
   "engines": {
-    "node": "19.8.1"
+    "node": ">=16.0.0"
   }
 }
