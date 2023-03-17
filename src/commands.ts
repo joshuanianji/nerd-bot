@@ -8,8 +8,9 @@ import { stat } from './commands/stat.js';
 import { Command } from './types/command.js';
 import { botstat } from './commands/botstat.js';
 import { plt } from './commands/plt.js';
+import { dev } from './commands/dev.js';
 
-const importedCmds = [vmstat, stat, botstat, plt];
+const importedCmds = [vmstat, stat, botstat, plt, dev];
 
 export const getCommands = (): Collection<string, Command> => {
     const commands = new Collection<string, Command>();

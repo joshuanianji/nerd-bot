@@ -12,7 +12,8 @@ const Environment = z.discriminatedUnion('ENV', [
 const Shared = z.object({
     TOKEN: z.string().min(1),
     WEBHOOK_URL: z.string().min(1),
-    DEV_ID: z.string().min(1)
+    DEV_IDS: z.string().min(1).transform((ids) => ids.split(' ')),
+    DATABASE_URL: z.string().min(1),
 })
 
 export const configSchema = Environment.and(Shared);

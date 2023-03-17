@@ -1,4 +1,4 @@
-import { ApplicationCommandDataResolvable, CommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { ApplicationCommandDataResolvable, ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import Client from '../client.js';
 
 export interface Command {
@@ -6,7 +6,7 @@ export interface Command {
     // used in help menu (if i ever get to create one...)
     description: string,
     dm_permission: boolean,
-    run: (client: Client, interaction: CommandInteraction) => Promise<void>;
+    run: (client: Client, interaction: ChatInputCommandInteraction) => Promise<void>;
     // update the slash command builder for custom options
     updateBuilder?: (builder: SlashCommandBuilder) => void;
 }

@@ -7,4 +7,10 @@ FROM mcr.microsoft.com/devcontainers/javascript-node:0-16-bullseye
 RUN sudo apt-get update && \
     sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev -y
 
+# postgresql client 15 for pg_dump commands (since we're using postgres 15 as our database)
+# https://nextgentips.com/2022/10/14/how-to-install-and-configure-postgresql-15-on-debian-11/
+RUN sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main 15" > /etc/apt/sources.list.d/pgdg.list'
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+RUN sudo apt update && sudo apt-get -y install postgresql-15
+
 RUN mkdir -p /home/node/.config/gh && chown -R node:node /home/node/.config
