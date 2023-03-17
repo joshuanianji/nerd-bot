@@ -10,6 +10,9 @@ export const pgdump = async (config: Config, intr: ChatInputCommandInteraction):
     await execa('pg_dump', ['--no-owner', `--dbname=${config.DATABASE_URL}`]).pipeStdout(`./dump.sql`);
     const fileSize = (await execa('du', ['-h', `./dump.sql`])).stdout.split('\t')[0];
 
+    // delete `dump.sql.gz` if it exists
+    await execa('rm', ['-f', `./dump.sql.gz`]);
+
     // gzip the file
     await execa('gzip', [`./dump.sql`]);
     const zippedFileSize = (await execa('du', ['-h', `./dump.sql.gz`])).stdout.split('\t')[0];
@@ -19,7 +22,7 @@ export const pgdump = async (config: Config, intr: ChatInputCommandInteraction):
         content: `Uncompressed size: \`${fileSize}.\` Uploaded size: \`${zippedFileSize}.\``
     });
 
-    // we choose not to delete the file because it'll be overwritten on the next dump
+    // we choose not to delete the file because it'll be handled on the next dump
     return;
 }
 
