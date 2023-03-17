@@ -37,8 +37,16 @@ Upon running PGAdmin the first time, add a server with the following settings: (
 
 ### Seeding the database
 
-Inside `prisma/seed.dev.ts`, there is a small script that does some initial seeding of the database. You can run this script by running the following command (assuming you're okay with resetting the database)
+Inside `prisma/seed.dev.ts`, there is a small script that does some initial seeding of the database. You can run this script by running the following command (assuming you're okay with resetting the database). Without any arguments, it will seed the database for 2 users with 20 messages and reactions each.
 
 ```bash
-NODE_ENV=development npx prisma migrate reset
+npm run seed
+```
+
+Further arguments can be provided:
+
+```bash
+npm run seed -- null # no users nor messages
+npm run seed -- basic # 2 users, but only one reaction
+npm run seed -- prod # copy of production database: ./prisma/prod.sql
 ```
