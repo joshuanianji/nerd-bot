@@ -10,7 +10,7 @@
     "build": "tsc",
     "postinstall": "prisma generate",
     "start": "node --es-module-specifier-resolution=node build/index.js",
-    "seed": "npx prisma migrate reset --skip-seed && NODE_ENV=development tsx prisma/seed.dev.ts"
+    "seed": "npx prisma migrate reset --skip-seed && tsx prisma/seed.dev.ts"
   },
   "repository": {
     "type": "git",

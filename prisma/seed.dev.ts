@@ -1,15 +1,20 @@
 
 // seed the database with some test data
 
-import { PrismaClient } from '@prisma/client'
-import { addNerdReaction } from '../src/util/collectNerdReaction'
+import { PrismaClient } from '@prisma/client';
+import { addNerdReaction } from '../src/util/collectNerdReaction';
 import { KindofDiscordMessage } from '../src/util/upsertMessage';
+import { execa } from 'execa';
+import dotenv from 'dotenv';
 
 const prisma = new PrismaClient()
 
 async function main() {
-    if (process.env.NODE_ENV !== 'development') {
-        console.error(`Skipping seed, not in development environment (NODE_ENV=${process.env.NODE_ENV})`);
+    // read env variables
+    dotenv.config();
+
+    if (process.env.ENV !== 'dev') {
+        console.error(`Skipping seed, not in development environment (ENV=${process.env.ENV})`);
         return;
     }
 
@@ -17,6 +22,32 @@ async function main() {
 
     const me_id = '240645351705542658';
     const other_id = '256212924723363844';
+
+    if (args.includes('prod')) {
+        // prod does not use prisma, but psql and the `prod.sql` file 
+        // so we use a different logic
+        console.log('Seeding prod database...')
+
+        const dbUrl = process.env.DATABASE_URL;
+        if (!dbUrl) {
+            console.error('DATABASE_URL not set, aborting');
+            return;
+        }
+
+        console.log(`Seeding '${dbUrl}' with prod.sql...`)
+        // psql --dbname=postgres://user:pass@host:port/dbname ./prisma/prod.sql
+        const output = await execa('psql', [`--dbname=${dbUrl}`, '-f', './prisma/prod2.sql']);
+        console.log(output.command)
+        if (output.exitCode !== 0) {
+            console.error(`Error seeding prod database! Error: ${output.exitCode}`);
+            console.log(output.stdout);
+            console.log(output.stderr);
+        } else {
+            console.log('Done!')
+            console.log(output.stdout);
+        }
+        return;
+    }
 
     // create 10 reactions from me_id to messages from other_id, and vice versa
     // copilot is a life saver for these things. Maybe I should have been more dry though?
