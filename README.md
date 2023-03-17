@@ -48,4 +48,5 @@ Further arguments can be provided:
 ```bash
 npm run seed -- null # no users nor messages
 npm run seed -- basic # 2 users, but only one reaction
+npm run seed -- prod # copy of production database: ./prisma/prod.sql
 ```
