@@ -36,7 +36,7 @@ async function main() {
 
         console.log(`Seeding '${dbUrl}' with prod.sql...`)
         // psql --dbname=postgres://user:pass@host:port/dbname ./prisma/prod.sql
-        const output = await execa('psql', [`--dbname=${dbUrl}`, '-f', './prisma/prod2.sql']);
+        const output = await execa('psql', [`--dbname=${dbUrl}`, '-f', './prisma/prod.sql']);
         console.log(output.command)
         if (output.exitCode !== 0) {
             console.error(`Error seeding prod database! Error: ${output.exitCode}`);
