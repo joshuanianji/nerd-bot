@@ -9,6 +9,7 @@ import { de } from 'date-fns/locale';
 import { Canvas } from '../types/canvas.js';
 import ExtendedClient from '../client.js';
 import * as result from '../types/result.js';
+import { ChartDataset } from 'chart.js';
 
 
 export const plt: Command = {
@@ -34,6 +35,12 @@ export const plt: Command = {
                 await intr.reply('Please specify two users!');
                 return;
             }
+
+            if (user1.id == user2.id) {
+                await intr.reply('Please specify two different users!');
+                return;
+            }
+
             return runDiffPlot(user1, user2, client, intr);
         } else {
             await intr.reply('Unknown subcommand!');
@@ -183,21 +190,28 @@ const getPlotScores = async <P extends Prisma.TransactionClient>(
 
     // list of colours to rotate
     const colours = ['#000', 'red', 'green']
-    const dataSets = datas.map(([data, user], i) => ({
-        data: data,
-        backgroundColor: colours[i % colours.length],
-        borderColor: colours[i % colours.length],
-        label: `${user.username}`,
-        borderWidth: 2,
-        pointRadius: 0
-    }))
+    const datasets = datas.map(([data, user], i) => {
+        // hardcoding that we're plotting a line chart for easier intellisense
+        // is this bad design? i'm genuinely not sure...
+        const dataset: ChartDataset<'line'> = {
+            data: data,
+            backgroundColor: colours[i % colours.length],
+            borderColor: colours[i % colours.length],
+            borderWidth: 2,
+            pointRadius: 0
+        }
+
+        // don't show label if there's only one user
+        if (users.length > 1) {
+            dataset.label = `${user.username}`;
+        }
+        return dataset;
+    })
 
     // example line chart
     const configuration: Chart.ChartConfiguration = {
         type: 'line',
-        data: {
-            datasets: dataSets
-        },
+        data: { datasets },
         options: {
             scales: {
                 x: {
@@ -218,6 +232,11 @@ const getPlotScores = async <P extends Prisma.TransactionClient>(
                     adapters: {
                         date: de
                     }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: users.length > 1
                 }
             }
         },
