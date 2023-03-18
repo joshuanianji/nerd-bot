@@ -14,6 +14,15 @@ export const ready = async (client: Client<true>): Promise<void> => {
         throw new Error('Client did not register in time, please try again');
     }
 
+    // Test prisma connection
+    // https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/connection-management#connect
+    await client.prisma.$connect();
+    log.info('Connected to Prisma!')
+
+    // authenticate with octokit
+    const { data: { login } } = await client.octokit.rest.users.getAuthenticated();
+    log.info(`Octokit: Authenticated as ${chalk.green(login)}`);
+
     log.info(`Registering commands`);
     const config = client.config;
 

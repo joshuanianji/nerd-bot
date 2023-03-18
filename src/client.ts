@@ -7,6 +7,8 @@ import chalk from 'chalk';
 import { PrismaClient } from '@prisma/client';
 import { ChartCallback } from 'chartjs-node-canvas';
 import { Canvas, mkCanvas } from './types/canvas.js';
+import { Octokit, App } from "octokit";
+
 
 // incorporating the "ready" status for slightly better type inference in certain situations
 class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
@@ -26,6 +28,8 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
     // to simplify things, I will just use one instance of the chartJsNodeCanvas object
     // alos, the solution mentioned does not work for esm lol
     private _canvas: Canvas;
+
+    private _octokit: Octokit;
 
     constructor(options: ClientOptions, config: Config) {
         super(options);
@@ -47,17 +51,15 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
         const width = 600;
         const height = 350;
         this._canvas = mkCanvas(width, height, chartCallback);
+
+        // init octokit
+        this._octokit = new Octokit({ auth: config.GITHUB_TOKEN });
     }
 
     public async init() {
         // Log in to Discord with the client token
         log.info('Logging in...')
         await this.login(this.config.TOKEN);
-
-        // Test prisma connection
-        // https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/connection-management#connect
-        log.info('Connecting to prisma...')
-        await this.prisma.$connect();
 
         log.success(`Successfully ran ${chalk.green('init()')} function`);
     }
@@ -89,6 +91,10 @@ class ExtendedClient<Ready extends boolean = boolean> extends Client<Ready> {
 
     get canvas(): Canvas {
         return this._canvas;
+    }
+
+    get octokit(): Octokit {
+        return this._octokit;
     }
 }
 
