@@ -12,8 +12,9 @@ Nerd Bot is configured for the following slash commands:
 - `/vmstat` - Basic stats about the computer running the bot
 - `/stat` - Nerd stats of the user who ran the command
 - `/stat @user` - Nerd stats of the mentioned user
-- `/plt` - Plots the nerd stats over time of the user who ran the command
-- `/plt @user` - Plots the nerd stats over time of the mentioned user
+- `/plt me` - Plots the nerd stats over time of the user who ran the command
+- `/plt user @user` - Plots the nerd stats over time of the mentioned user
+- `/plt two @user1 @user2` - Plots two users' nerd stats over time
 
 ## Running Locally
 
