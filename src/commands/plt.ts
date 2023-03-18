@@ -27,7 +27,7 @@ export const plt: Command = {
                 return;
             }
             return runSinglePlot(user, client, intr);
-        } else if (subcommand === 'diff') {
+        } else if (subcommand === 'two') {
             const user1 = intr.options.getUser('user1');
             const user2 = intr.options.getUser('user2');
 
