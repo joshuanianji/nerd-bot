@@ -43,7 +43,7 @@ export const plt: Command = {
 
             return runDiffPlot(user1, user2, client, intr);
         } else {
-            await intr.reply('Unknown subcommand!');
+            await intr.reply(`Unknown subcommand ${subcommand}!`);
             return;
         }
     },
@@ -60,8 +60,8 @@ export const plt: Command = {
                             .setRequired(true)
                     ))
             .addSubcommand(subcommand =>
-                subcommand.setName('diff')
-                    .setDescription('Plot the difference between two users\' nerd scores')
+                subcommand.setName('two')
+                    .setDescription('Plot two users\' nerd scores')
                     .addUserOption(option =>
                         option.setName('user1')
                             .setDescription('The first user to plot the nerd score of')
