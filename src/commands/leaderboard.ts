@@ -28,7 +28,11 @@ export const leaderboard: Command = {
         // https://discord.js.org/#/docs/discord.js/main/class/Client?scrollTo=users
         // from my experience, this is pretty slow to query when we have cache misses
         // so, I only query users for the top 10 to save on API calls and increase my cache hit ratio
+        let cacheHits = 0;
         const first10Users = await Promise.all(first10.map(async ({ id, score }) => {
+            if (client.users.cache.has(id)) {
+                cacheHits++;
+            }
             const discordUser = await client.users.fetch(id);
             return { discordUser, score }
         }))
@@ -39,6 +43,9 @@ export const leaderboard: Command = {
             .addFields({
                 name: `${getBottom ? 'Bottom' : 'Top'} 10 Nerd Scores`,
                 value: first10Users.map(({ discordUser, score }, i) => `${i + 1}. ${discordUser.username} - \`${score}\``).join('\n')
+            })
+            .setFooter({
+                text: `${cacheHits} cache hits, ${first10Users.length - cacheHits} API calls`
             })
         await intr.editReply({ content: '', embeds: [embed] });
         return;
