@@ -12,21 +12,23 @@ export const leaderboard: Command = {
         // maybe we should have a separate table for this. But how do we keep it updated?
         // since my database is so small, i think the naive approach is fine for now
 
+        const getBottom = intr.options.getBoolean('bottom', false) || false;
+
         const users = await client.prisma.user.findMany();
         const scores = await Promise.all(users.map(async u => {
             const score = await getScore(u.id, client.prisma)
             return { id: u.id, score }
         }));
-        // sort by score, and take the top 10
-        scores.sort((a, b) => b.score - a.score);
-        const top10 = scores.slice(0, 10);
+        // sort by score (ascending or descending depends on whether we're getting top 10 or bottom 10), and take the first 10
+        scores.sort((a, b) => getBottom ? a.score - b.score : b.score - a.score);
+        const first10 = scores.slice(0, 10);
 
         // then, add the usernames
         // a discord client caches a mapping of ID to users via the user manager
         // https://discord.js.org/#/docs/discord.js/main/class/Client?scrollTo=users
         // from my experience, this is pretty slow to query when we have cache misses
         // so, I only query users for the top 10 to save on API calls and increase my cache hit ratio
-        const top10Users = await Promise.all(top10.map(async ({ id, score }) => {
+        const first10Users = await Promise.all(first10.map(async ({ id, score }) => {
             const discordUser = await client.users.fetch(id);
             return { discordUser, score }
         }))
@@ -35,10 +37,18 @@ export const leaderboard: Command = {
         const embed = new EmbedBuilder()
             .setTitle('Leaderboard')
             .addFields({
-                name: 'Top 10 Nerd Scores',
-                value: top10Users.map(({ discordUser, score }, i) => `${i + 1}. ${discordUser.username} - \`${score}\``).join('\n')
+                name: `${getBottom ? 'Bottom' : 'Top'} 10 Nerd Scores`,
+                value: first10Users.map(({ discordUser, score }, i) => `${i + 1}. ${discordUser.username} - \`${score}\``).join('\n')
             })
         await intr.editReply({ content: '', embeds: [embed] });
         return;
+    },
+    updateBuilder(builder) {
+        builder
+            .addBooleanOption(option =>
+                option.setName('bottom')
+                    .setDescription('Show the bottom 10 scores instead of the top 10')
+                    .setRequired(false)
+            )
     }
 }
