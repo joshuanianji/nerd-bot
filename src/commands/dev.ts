@@ -1,5 +1,6 @@
 import { Command } from '../types/command.js';
 import { pgdump } from './dev/pgdump.js';
+import { pgpush } from './dev/pgpush.js';
 
 export const dev: Command = {
     name: 'dev',
@@ -15,6 +16,8 @@ export const dev: Command = {
         const subcommand = intr.options.getSubcommand();
         if (subcommand === 'pgdump') {
             return pgdump(client.config, intr);
+        } else if (subcommand === 'pgpush') {
+            return pgpush(client.config, intr);
         } else {
             await intr.reply('Unknown subcommand!');
             return;
@@ -27,6 +30,11 @@ export const dev: Command = {
                 subcommand
                     .setName('pgdump')
                     .setDescription('Get a dump of the database')
+            )
+            .addSubcommand(subcommand =>
+                subcommand
+                    .setName('pgpush')
+                    .setDescription('Push a dump of the database to the repo')
             )
     }
 }

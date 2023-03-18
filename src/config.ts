@@ -14,6 +14,7 @@ const Shared = z.object({
     WEBHOOK_URL: z.string().min(1),
     DEV_IDS: z.string().min(1).transform((ids) => ids.split(' ')),
     DATABASE_URL: z.string().min(1),
+    GITHUB_TOKEN: z.string().min(1),
 })
 
 export const configSchema = Environment.and(Shared);
