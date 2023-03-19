@@ -34,7 +34,7 @@
     "dotenv": "16.0.3",
     "execa": "^7.1.1",
     "filesize": "10.0.6",
-    "pretty-ms": "7.0.1",
+    "pretty-ms": "8.0.0",
     "prisma": "4.11.0",
     "systeminformation": "5.17.12",
     "zod": "3.21.4"
