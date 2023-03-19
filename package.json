@@ -26,7 +26,7 @@
   "dependencies": {
     "@prisma/client": "4.11.0",
     "chalk": "5.2.0",
-    "chart.js": "3.9.1",
+    "chart.js": "4.2.1",
     "chartjs-node-canvas": "4.1.6",
     "date-fns": "2.29.3",
     "dayjs": "1.11.7",
