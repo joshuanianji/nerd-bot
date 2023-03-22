@@ -1,9 +1,9 @@
 
-import { Config } from '../../config.js';
+import Client from '../../client.js';
 import { ChatInputCommandInteraction } from 'discord.js';
 
-export const pgpush = async (config: Config, intr: ChatInputCommandInteraction): Promise<void> => {
-    intr.reply('hi')
+export const pgpush = async (client: Client, intr: ChatInputCommandInteraction): Promise<void> => {
+    intr.reply('Not implemented yet.');
     return;
 }
 

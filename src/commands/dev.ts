@@ -17,7 +17,7 @@ export const dev: Command = {
         if (subcommand === 'pgdump') {
             return pgdump(client.config, intr);
         } else if (subcommand === 'pgpush') {
-            return pgpush(client.config, intr);
+            return pgpush(client, intr);
         } else {
             await intr.reply('Unknown subcommand!');
             return;
