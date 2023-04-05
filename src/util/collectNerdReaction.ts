@@ -1,17 +1,17 @@
-import { Prisma, Reaction } from '@prisma/client';
+import { Prisma, ReactionNew, Reaction } from '@prisma/client';
 import { getScore, scoreDeltas } from './score.js';
 import { KindofDiscordMessage, upsertMessage } from './upsertMessage.js';
 import { upsertUser } from './upsertUser.js';
 
 /**
- * 
  * Add a nerd reaction to the database. Handles things like the weight of the reaction, and the position of the reaction
+ * TODO: this is a temporary function, to be removed once the migration is complete
  * 
  * @returns 
  */
-export const addNerdReaction = async <P extends Prisma.TransactionClient>(
+export const addNerdReactionNew = async <P extends Prisma.TransactionClient>(
     userId: string, msg: KindofDiscordMessage, client: P
-): Promise<Reaction> => {
+): Promise<ReactionNew> => {
     // create user who reacts (userA) and user who is reacted to (userB)
     const userA = await upsertUser(userId, client);
     const userB = await upsertUser(msg.author.id, client);
@@ -25,7 +25,7 @@ export const addNerdReaction = async <P extends Prisma.TransactionClient>(
     const [deltaA, deltaB] = scoreDeltas(scoreA, scoreB);
 
     // create a new reaction 
-    return client.reaction.create({
+    return client.reactionNew.create({
         data: {
             user: { connect: { id: userA.id } },
             message: { connect: { id: prismaMsg.id } },
@@ -35,6 +35,26 @@ export const addNerdReaction = async <P extends Prisma.TransactionClient>(
         }
     });
 }
+
+// TODO: delete (this is just for the migration!)
+export const addNerdReaction = async <P extends Prisma.TransactionClient>(
+    userId: string, msg: KindofDiscordMessage, client: P
+): Promise<Reaction> => {
+    const prismaUser = await upsertUser(userId, client);
+    const prismaMsg = await upsertMessage(msg, client, 'incrementCounter');
+    const weight = await getScore(prismaUser.id, client);
+    // create a new reaction 
+    return client.reaction.create({
+        data: {
+            user: { connect: { id: prismaUser.id } },
+            message: { connect: { id: prismaMsg.id } },
+            position: prismaMsg.reactionCounter,
+            weight: weight * 0.1,
+            createdAt: msg.createdAt
+        }
+    });
+}
+
 
 export const deleteNerdReaction = async <P extends Prisma.TransactionClient>(
     userId: string, msg: KindofDiscordMessage, client: P
