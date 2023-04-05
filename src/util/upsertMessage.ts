@@ -8,7 +8,7 @@ type CounterAction = 'incrementCounter' | 'decrementCounter' | 'none';
 // but inside upsertMessage, I want to pass in a Message<true> type (from discord.js)
 // but in prisma/seed.dev.ts, I don't have access to construct a discord message from scratch
 // so the KindofDiscordMessage serves as a subtype of Message<true> that I can construct myself
-// the good thing is, Message<true> being a supertype means we don't have to change anything in the code
+// the good thing is, Message<true> being a supertype means we don't have to change much in the code
 export type KindofDiscordMessage = {
     author: KindofDiscordUser,
     id: string,
