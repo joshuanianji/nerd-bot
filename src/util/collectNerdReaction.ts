@@ -1,5 +1,5 @@
 import { Prisma, ReactionNew, Reaction } from '@prisma/client';
-import { getScore, scoreDeltas } from './score.js';
+import { getScore, getScoreNew, scoreDeltas } from './score.js';
 import { KindofDiscordMessage, upsertMessage } from './upsertMessage.js';
 import { upsertUser } from './upsertUser.js';
 
@@ -18,11 +18,16 @@ export const addNerdReactionNew = async <P extends Prisma.TransactionClient>(
 
     const prismaMsg = await upsertMessage(msg, client, 'incrementCounter');
 
-    const scoreA = await getScore(userA.id, client);
-    const scoreB = await getScore(userB.id, client);
+    const scoreA = await getScoreNew(userA.id, client);
+    const scoreB = await getScoreNew(userB.id, client);
 
-    // Get score deltas, GIVEN THAT userA reacted to userB
+    // Get score deltas, given that userA reacted to userB
     const [deltaA, deltaB] = scoreDeltas(scoreA, scoreB);
+
+    if (deltaA === 0 && deltaB === 0) {
+        // no change in score, so don't bother adding a reaction
+        console.log(`  No change in score: ${userA.id} -> ${userB.id} (${scoreA}, ${scoreB})`)
+    }
 
     // create a new reaction 
     return client.reactionNew.create({

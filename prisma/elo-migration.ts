@@ -9,13 +9,17 @@ import dotenv from 'dotenv';
 
 const prisma = new PrismaClient()
 
+// delete all data from prisma.reactionNew
+await prisma.reactionNew.deleteMany({});
+
 const reactions = await prisma.reaction.findMany({
     orderBy: {
         createdAt: 'asc'
     }
 });
 
-console.log(reactions.splice(0, 10));
+console.log(reactions[0]);
+console.log(reactions[reactions.length - 1]);
 
 for (const reaction of reactions) {
     // make a new reaction

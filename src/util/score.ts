@@ -5,17 +5,19 @@ import { Prisma } from '@prisma/client';
 /**
  * Returns the score of a user, based on all reactions and their weights
  */
-export const getScoreNew = async <P extends Prisma.TransactionClient>(userId: string, prisma: P): Promise<number> => {
+export const getScoreNew = async <P extends Prisma.TransactionClient>(userId: string, prisma: P, date?: Date): Promise<number> => {
     const reactionsSent = await prisma.reactionNew.findMany({
         where: {
-            user: { id: userId }
+            user: { id: userId },
+            createdAt: { lte: date ?? new Date() }
         }
     });
 
     // reactionsReceived are al reactions on a message where the user is the author
     const reactionsReceived = await prisma.reactionNew.findMany({
         where: {
-            message: { author: { id: userId } }
+            message: { author: { id: userId } },
+            createdAt: { lte: date ?? new Date() }
         }
     });
 
@@ -57,8 +59,8 @@ export const scoreDeltas = (scoreA: number, scoreB: number): [number, number] =>
     // k = 32 seems to be a good value for now, i'll probably make this configurable later
     const k = 32;
 
-    const probA = eloProbability(scoreA, scoreB);
-    const probB = eloProbability(scoreB, scoreA);
+    const probA = eloProbability(scoreB, scoreA);
+    const probB = eloProbability(scoreA, scoreB);
 
     const deltaA = k * (1 - probA);
     const deltaB = k * (0 - probB);
@@ -71,4 +73,4 @@ export const scoreDeltas = (scoreA: number, scoreB: number): [number, number] =>
  * https://www.geeksforgeeks.org/elo-rating-algorithm/
  */
 const eloProbability = (scoreA: number, scoreB: number): number =>
-    (1.0 * 1.0) / (1 + 1.0 * Math.pow(10, (1.0 * (scoreA - scoreB)) / 400))
+    1 / (1 + Math.pow(10, (scoreA - scoreB) / 400))
