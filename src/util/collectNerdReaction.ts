@@ -1,36 +1,31 @@
-import { Prisma, ReactionNew, Reaction } from '@prisma/client';
-import { getScore, getScoreNew, scoreDeltas } from './score.js';
+import { Prisma, Reaction } from '@prisma/client';
+import { getScore, scoreDeltas } from './score.js';
 import { KindofDiscordMessage, upsertMessage } from './upsertMessage.js';
 import { upsertUser } from './upsertUser.js';
 
 /**
- * Add a nerd reaction to the database. Handles things like the weight of the reaction, and the position of the reaction
- * TODO: this is a temporary function, to be removed once the migration is complete
+ * Add a nerd reaction to the database
+ * Handles updating scores and creating new users if necessary
  * 
  * @returns 
  */
-export const addNerdReactionNew = async <P extends Prisma.TransactionClient>(
+export const addNerdReaction = async <P extends Prisma.TransactionClient>(
     userId: string, msg: KindofDiscordMessage, client: P
-): Promise<ReactionNew> => {
+): Promise<Reaction> => {
     // create user who reacts (userA) and user who is reacted to (userB)
     const userA = await upsertUser(userId, client);
     const userB = await upsertUser(msg.author.id, client);
 
     const prismaMsg = await upsertMessage(msg, client, 'incrementCounter');
 
-    const scoreA = await getScoreNew(userA.id, client);
-    const scoreB = await getScoreNew(userB.id, client);
+    const scoreA = await getScore(userA.id, client);
+    const scoreB = await getScore(userB.id, client);
 
     // Get score deltas, given that userA reacted to userB
     const [deltaA, deltaB] = scoreDeltas(scoreA, scoreB);
 
-    if (deltaA === 0 && deltaB === 0) {
-        // no change in score, so don't bother adding a reaction
-        console.log(`  No change in score: ${userA.id} -> ${userB.id} (${scoreA}, ${scoreB})`)
-    }
-
     // create a new reaction 
-    return client.reactionNew.create({
+    return client.reaction.create({
         data: {
             user: { connect: { id: userA.id } },
             message: { connect: { id: prismaMsg.id } },
@@ -40,26 +35,6 @@ export const addNerdReactionNew = async <P extends Prisma.TransactionClient>(
         }
     });
 }
-
-// TODO: delete (this is just for the migration!)
-export const addNerdReaction = async <P extends Prisma.TransactionClient>(
-    userId: string, msg: KindofDiscordMessage, client: P
-): Promise<Reaction> => {
-    const prismaUser = await upsertUser(userId, client);
-    const prismaMsg = await upsertMessage(msg, client, 'incrementCounter');
-    const weight = await getScore(prismaUser.id, client);
-    // create a new reaction 
-    return client.reaction.create({
-        data: {
-            user: { connect: { id: prismaUser.id } },
-            message: { connect: { id: prismaMsg.id } },
-            position: prismaMsg.reactionCounter,
-            weight: weight * 0.1,
-            createdAt: msg.createdAt
-        }
-    });
-}
-
 
 export const deleteNerdReaction = async <P extends Prisma.TransactionClient>(
     userId: string, msg: KindofDiscordMessage, client: P

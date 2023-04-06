@@ -180,7 +180,7 @@ const getPlotScores = async <P extends Prisma.TransactionClient>(
     // `The requested module 'chart.js' does not provide an export named '_adapters'`
     Chart._adapters._date.override(dateFnsAdapter);
 
-    const dataPromises = users.map(user => getUserDataPointsNew(user, prisma));
+    const dataPromises = users.map(user => getUserDataPoints(user, prisma));
     const results = await Promise.all(dataPromises);
     const [datas, errs] = result.unzip(results)
 
@@ -270,58 +270,10 @@ const getUserDataPoints = async <P extends Prisma.TransactionClient>(user: User,
     const reactionsSent = await prisma.reaction.findMany({
         where: { user: { id: user.id } }
     });
-    const sentGeneral = reactionsSent.map(r => ({ type: 'additive' as const, reaction: r }))
-
-    // reactionsReceived are all reactions on a message where the user is the author
-    const reactionsReceived = await prisma.reaction.findMany({
-        where: { message: { author: { id: user.id } } }
-    });
-    const receivedGeneral = reactionsReceived.map(r => ({ type: 'subtractive' as const, reaction: r }))
-
-    // all reactions are sorted in ascending order of time
-    const reactions = [...sentGeneral, ...receivedGeneral];
-    reactions.sort((a, b) => a.reaction.createdAt.getTime() - b.reaction.createdAt.getTime());
-
-    if (reactions.length === 0) {
-        // the user is registered in the User table, but has no reactions
-        return result.err(`${user.username} has no reactions`)
-    }
-
-    // now, I want to initialize the `data` array with an "initial" point of 1000
-    // To make it actually visible, I'll set it to appear before the first point on the graph, 1/25th of the total time away
-    const firstReaction = reactions[0].reaction.createdAt.getTime();
-    const lastReaction = reactions[reactions.length - 1].reaction.createdAt.getTime();
-    // subtracting 1 second in the case that the user only has one reaction
-    const initialTime = new Date(firstReaction - (lastReaction - firstReaction) / 25 - 1000);
-
-    // here, we finally collect the data
-    const data: DataPoint[] = [{ y: 1000, x: initialTime.getTime() }];
-    let score = 1000;
-    for (const { type, reaction } of reactions) {
-        if (type === 'additive') {
-            score += reaction.weight;
-        } else {
-            score -= reaction.weight;
-        }
-        data.push({ y: score, x: reaction.createdAt.getTime() });
-    }
-
-    return result.ok([data, user]);
-}
-
-
-// get the data points for the nerd plot, for a single user
-const getUserDataPointsNew = async <P extends Prisma.TransactionClient>(user: User, prisma: P): Promise<result.Result<[DataPoint[], User], string>> => {
-    // this code is kinda messy, but the first part emulates the getScore function
-    // we get all the reactions sent and received, and we just want to put them in one big array, sorted by date
-    // then, we can reduce over the entire array in one sweep, creating a cumulative sum of the scores over time
-    const reactionsSent = await prisma.reactionNew.findMany({
-        where: { user: { id: user.id } }
-    });
     const sentGeneral = reactionsSent.map(r => ({ type: 'sent' as const, reaction: r }))
 
     // reactionsReceived are all reactions on a message where the user is the author
-    const reactionsReceived = await prisma.reactionNew.findMany({
+    const reactionsReceived = await prisma.reaction.findMany({
         where: { message: { author: { id: user.id } } }
     });
     const receivedGeneral = reactionsReceived.map(r => ({ type: 'received' as const, reaction: r }))

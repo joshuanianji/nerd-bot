@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@discordjs/builders';
 import { Command } from '../types/command.js';
-import { getScore, getScoreNew } from '../util/score.js';
+import { getScore } from '../util/score.js';
 
 export const leaderboard: Command = {
     name: 'leaderboard',
@@ -16,7 +16,7 @@ export const leaderboard: Command = {
 
         const users = await client.prisma.user.findMany();
         const scores = await Promise.all(users.map(async u => {
-            const score = await getScoreNew(u.id, client.prisma)
+            const score = await getScore(u.id, client.prisma)
             return { id: u.id, score }
         }));
         // sort by score (ascending or descending depends on whether we're getting top 10 or bottom 10), and take the first 10
