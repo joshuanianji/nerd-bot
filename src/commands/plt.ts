@@ -238,6 +238,11 @@ const getPlotScores = async <P extends Prisma.TransactionClient>(
                 legend: {
                     display: users.length > 1
                 }
+            },
+            layout: {
+                padding: {
+                    right: 8
+                }
             }
         },
         plugins: [{
