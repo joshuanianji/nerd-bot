@@ -1,7 +1,6 @@
 import { Prisma, Reaction } from '@prisma/client';
 import { getScore, scoreDeltas } from './score.js';
-import { KindofDiscordMessage, upsertMessage } from './upsertMessage.js';
-import { upsertUser } from './upsertUser.js';
+import { upsertUser, upsertMessage, KindofDiscordMessage } from './db.js';
 
 /**
  * Add a nerd reaction to the database

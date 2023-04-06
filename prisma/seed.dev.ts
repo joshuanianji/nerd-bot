@@ -3,7 +3,7 @@
 
 import { PrismaClient } from '@prisma/client';
 import { addNerdReaction } from '../src/util/collectNerdReaction';
-import { KindofDiscordMessage } from '../src/util/upsertMessage';
+import { KindofDiscordMessage } from '../src/util/db';
 import { execa } from 'execa';
 import dotenv from 'dotenv';
 
