@@ -148,6 +148,15 @@ async function createReactions(me_id: string, other_id: string, args: string[]) 
         ]
     }
 
+    if (arg === 'lopsided') {
+        return [...Array(10).keys()].map(i => ({
+            userId: me_id,
+            messageId: `${i}`,
+            msgAuthorId: other_id,
+            createdAt: new Date(today.getTime() - dayInMillis * (i + 1))
+        }))
+    }
+
     if (arg === 'null') {
         return []
     }
