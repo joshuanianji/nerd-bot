@@ -1,8 +1,8 @@
 import { Command } from '../types/command.js';
 import { EmbedBuilder } from '@discordjs/builders';
-import { upsertUser } from '../util/upsertUser.js';
+import { upsertUser } from '../util/db.js';
 import { PrismaClient } from '@prisma/client';
-import { getScore } from '../util/getScore.js';
+import { getScore } from '../util/score.js';
 
 export const stat: Command = {
     name: 'stat',

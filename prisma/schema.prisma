@@ -23,8 +23,8 @@ model Reaction {
     userId    String
     message   Message  @relation(fields: [messageId], references: [id])
     messageId String
-    position  Int // first reaction is 0
-    weight    Float // weight is 10% of the reactor's score when initially reacted.
+    deltaA    Float // how much to update userA's score (the person who reacted)
+    deltaB    Float // how much to update userB's score (the person who was reacted to/author of message)
 
     @@id([userId, messageId])
 }

@@ -270,13 +270,13 @@ const getUserDataPoints = async <P extends Prisma.TransactionClient>(user: User,
     const reactionsSent = await prisma.reaction.findMany({
         where: { user: { id: user.id } }
     });
-    const sentGeneral = reactionsSent.map(r => ({ type: 'additive' as const, reaction: r }))
+    const sentGeneral = reactionsSent.map(r => ({ type: 'sent' as const, reaction: r }))
 
     // reactionsReceived are all reactions on a message where the user is the author
     const reactionsReceived = await prisma.reaction.findMany({
         where: { message: { author: { id: user.id } } }
     });
-    const receivedGeneral = reactionsReceived.map(r => ({ type: 'subtractive' as const, reaction: r }))
+    const receivedGeneral = reactionsReceived.map(r => ({ type: 'received' as const, reaction: r }))
 
     // all reactions are sorted in ascending order of time
     const reactions = [...sentGeneral, ...receivedGeneral];
@@ -298,13 +298,17 @@ const getUserDataPoints = async <P extends Prisma.TransactionClient>(user: User,
     const data: DataPoint[] = [{ y: 1000, x: initialTime.getTime() }];
     let score = 1000;
     for (const { type, reaction } of reactions) {
-        if (type === 'additive') {
-            score += reaction.weight;
+        if (type === 'sent') {
+            score += reaction.deltaA;
         } else {
-            score -= reaction.weight;
+            score += reaction.deltaB;
         }
         data.push({ y: score, x: reaction.createdAt.getTime() });
     }
+
+    // finally, push today's score to the end of the array
+    const today = new Date();
+    data.push({ y: score, x: today.getTime() });
 
     return result.ok([data, user]);
 }

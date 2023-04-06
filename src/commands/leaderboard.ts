@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@discordjs/builders';
 import { Command } from '../types/command.js';
-import { getScore } from '../util/getScore.js';
+import { getScore } from '../util/score.js';
 
 export const leaderboard: Command = {
     name: 'leaderboard',

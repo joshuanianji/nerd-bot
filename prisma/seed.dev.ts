@@ -3,7 +3,7 @@
 
 import { PrismaClient } from '@prisma/client';
 import { addNerdReaction } from '../src/util/collectNerdReaction';
-import { KindofDiscordMessage } from '../src/util/upsertMessage';
+import { KindofDiscordMessage } from '../src/util/db';
 import { execa } from 'execa';
 import dotenv from 'dotenv';
 
@@ -146,6 +146,15 @@ async function createReactions(me_id: string, other_id: string, args: string[]) 
         return [
             { userId: me_id, messageId: '1', msgAuthorId: other_id, createdAt: today },
         ]
+    }
+
+    if (arg === 'lopsided') {
+        return [...Array(10).keys()].map(i => ({
+            userId: me_id,
+            messageId: `${i}`,
+            msgAuthorId: other_id,
+            createdAt: new Date(today.getTime() - dayInMillis * (i + 1))
+        }))
     }
 
     if (arg === 'null') {
