@@ -25,6 +25,8 @@ export const messageCreate = (client: Client, message: Message) => {
 
     collector.on('collect', async (reaction, user) => {
         try {
+            if (user.id === message.author.id) return;
+
             await addNerdReaction(user.id, message, prisma)
 
             log.info(`Collected a new ${reaction.emoji.name} reaction`);
