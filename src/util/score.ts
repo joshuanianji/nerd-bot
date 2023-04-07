@@ -30,17 +30,19 @@ export const getScore = async <P extends Prisma.TransactionClient>(userId: strin
  * Given user1 and user2, where **user1 reacted to user2**
  * calculate the score deltas
  * 
- * Note user1 reacting to user2 is the ELO equivalent of user1 winning
+ * Note user1 reacting to user2 is the ELO equivalent of user1 "losing"
+ * this is because we want the user who reacts to lose nerd score (you get more nerdy when people react to you)
  */
 export const scoreDeltas = (scoreA: number, scoreB: number): [number, number] => {
     // k = 32 seems to be a good value for now, i'll probably make this configurable later
     const k = 32;
 
+    // probabilities of players A and B "winning"
     const probA = eloProbability(scoreB, scoreA);
     const probB = eloProbability(scoreA, scoreB);
 
-    const deltaA = k * (1 - probA);
-    const deltaB = k * (0 - probB);
+    const deltaA = k * (0 - probA);
+    const deltaB = k * (1 - probB);
 
     return [deltaA, deltaB];
 }
