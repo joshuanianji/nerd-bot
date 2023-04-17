@@ -13,7 +13,7 @@ services:
   # also, we don't need to change anything from docker-compose.yml
   # I'm adding the "image" so docker-compose won't yell at me
   pgadmin:
-    image: dpage/pgadmin4:6
+    image: dpage/pgadmin4:7
 
 # this network is configured in my digital ocean droplet
 networks:
