@@ -1,43 +1,36 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
-  "name": "Nerdbot",
-  "dockerComposeFile": ["../docker-compose.yml", "docker-compose.yml"],
-  "service": "editor",
-  "workspaceFolder": "/workspace",
-  "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
-  },
-  "customizations": {
-    "vscode": {
-      "extensions": [
-		"prisma.prisma",
-		"irongeek.vscode-env",
-		"GitHub.copilot",
-		"alefragnani.Bookmarks",
-		"me-dutour-mathieu.vscode-github-actions",
-		"Orta.vscode-twoslash-queries"
-	]
-    }
-  },
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
-  "postStartCommand": "npm i",
-
-  // make the github CLI auth token persist across restarts
-  "mounts": [
-    {
-        "source": "devcontainer-gh-cli-${devcontainerId}",
-        "target": "/home/node/.config/gh",
-        "type": "volume"
-    }
-  ]
-
-  // Configure tool-specific properties.
-  // "customizations": {},
-
-  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-  // "remoteUser": "root"
+    "name": "Nerdbot",
+    "dockerComposeFile": [
+        "../docker-compose.yml",
+        "docker-compose.yml"
+    ],
+    "service": "editor",
+    "workspaceFolder": "/workspace",
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+		"ghcr.io/joshuanianji/devcontainer-features/github-cli-persistence:0": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "prisma.prisma",
+                "irongeek.vscode-env",
+                "GitHub.copilot",
+                "alefragnani.Bookmarks",
+                "me-dutour-mathieu.vscode-github-actions",
+                "Orta.vscode-twoslash-queries"
+            ]
+        }
+    },
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+    "postStartCommand": "npm i"
+    // Configure tool-specific properties.
+    // "customizations": {},
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "root"
 }
