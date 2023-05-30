@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/joshuanianji/nerd-bot#readme",
   "dependencies": {
-    "@prisma/client": "4.14.1",
+    "@prisma/client": "4.15.0",
     "chalk": "5.2.0",
     "chart.js": "3.9.1",
     "chartjs-node-canvas": "4.1.6",
@@ -35,8 +35,8 @@
     "execa": "7.1.1",
     "filesize": "10.0.7",
     "pretty-ms": "8.0.0",
-    "prisma": "4.14.1",
-    "systeminformation": "5.17.12",
+    "prisma": "4.15.0",
+    "systeminformation": "5.17.16",
     "zod": "3.21.4"
   },
   "devDependencies": {
