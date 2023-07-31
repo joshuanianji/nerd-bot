@@ -2,3 +2,4 @@ node_modules
 build
 .github
 .devcontainer
+docker-compose*.yml
