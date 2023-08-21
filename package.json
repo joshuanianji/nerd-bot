@@ -32,7 +32,7 @@
     "dayjs": "1.11.9",
     "discord.js": "14.12.1",
     "dotenv": "16.3.1",
-    "execa": "7.2.0",
+    "execa": "8.0.1",
     "filesize": "10.0.12",
     "pretty-ms": "8.0.0",
     "prisma": "5.1.1",
