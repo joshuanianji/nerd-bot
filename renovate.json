@@ -2,7 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "rangeStrategy": "pin",
   "extends": [
-    "config:base", "schedule:weekly", "group:allNonMajor"
+    "config:base", "schedule:monthly", "group:allNonMajor"
   ],
   "packageRules": [{
     "description": "Ignore nodejs engine",
