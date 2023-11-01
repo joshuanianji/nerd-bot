@@ -1,4 +1,4 @@
-FROM node:16-bullseye-slim
+FROM node:21-bullseye-slim
 
 # install dumb init for better SIGINT handling
 # also install open-ssl since prisma needs it - https://github.com/prisma/prisma/issues/16232
