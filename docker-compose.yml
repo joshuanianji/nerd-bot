@@ -17,7 +17,7 @@ services:
       - db_data:/var/lib/postgresql/data
 
   pgadmin:
-    image: dpage/pgadmin4:6
+    image: dpage/pgadmin4:8
     restart: ${RESTART_POLICY}
     environment:
       - PGADMIN_DEFAULT_EMAIL
