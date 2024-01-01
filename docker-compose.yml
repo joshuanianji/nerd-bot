@@ -7,7 +7,7 @@ services:
   db:
     # note: be careful when upgrading this image!
     # the `bot` and `editor` service import the postgres client version based on the postgres version we have here
-    image: postgres:15
+    image: postgres:16
     restart: ${RESTART_POLICY}
     environment:
       - POSTGRES_PASSWORD
