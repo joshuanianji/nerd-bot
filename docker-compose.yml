@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3'
 
 # this docker-compose file is used both to run the app locally (combined with .devcontainer/devcontainer.json)
 # and to run the app in production (combined with docker-compose.prod.yml)
@@ -16,18 +16,6 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
-  pgadmin:
-    image: dpage/pgadmin4:6
-    restart: ${RESTART_POLICY}
-    environment:
-      - PGADMIN_DEFAULT_EMAIL
-      - PGADMIN_DEFAULT_PASSWORD
-      - PGADMIN_CONFIG_SERVER_MODE=True
-      - PGADMIN_CONFIG_SERVER_ENFORCE_TLS=False
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    depends_on:
-      - db
 
 volumes:
   db_data:

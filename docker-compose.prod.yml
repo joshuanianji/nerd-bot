@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3'
 
 services:
   bot:
@@ -9,13 +9,7 @@ services:
     depends_on:
       - db
 
-  # don't expose ports - we'll manage them via nginx proxy manager
-  # also, we don't need to change anything from docker-compose.yml
-  # I'm adding the "image" so docker-compose won't yell at me
-  pgadmin:
-    image: dpage/pgadmin4:6
-
-# this network is configured in my digital ocean droplet
+# this network is configured in my VPS
 networks:
   default:
     name: main-network

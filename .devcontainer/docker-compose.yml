@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3'
 services:
   editor:
     build:
@@ -9,9 +9,3 @@ services:
     command: /bin/sh -c "while sleep 1000; do :; done"
     depends_on:
       - db
-
-  pgadmin:
-    image: dpage/pgadmin4:6
-    restart: ${RESTART_POLICY}
-    ports:
-      - 5050:80
