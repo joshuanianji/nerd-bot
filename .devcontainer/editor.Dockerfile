@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/javascript-node:1-16-bullseye
+FROM mcr.microsoft.com/devcontainers/javascript-node:0-16-bullseye
 
 # required for chartjs-node-canvas on arm machines
 # https://github.com/SeanSobey/ChartjsNodeCanvas/issues/107#issuecomment-1185438310
