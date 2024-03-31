@@ -22,7 +22,8 @@
                 "GitHub.copilot",
                 "alefragnani.Bookmarks",
                 "me-dutour-mathieu.vscode-github-actions",
-                "Orta.vscode-twoslash-queries"
+                "Orta.vscode-twoslash-queries",
+                "github.vscode-github-actions"
             ]
         }
     },
