@@ -23,18 +23,7 @@ First, create a `.env` file in the root of the project by copying the `.env.exam
 Then, you can open up the project in your devcontainer. Devcontainers sets up the environment via docker-compose with the following services:
 
 - Postgres 15 Database
-- PGAdmin4 v6 (database admin) - accessible via [http://localhost:5050](http://localhost:5050)
-    - Username: `admin@admin.com`
-    - Password: `admin`
-- Node 20 (devcontainer workspace)
-
-Upon running PGAdmin the first time, add a server with the following settings: ([source](https://stackoverflow.com/a/51172659))
-
-- Name: whatever you want
-- Connection > Host: `db`
-- Connection > Port: `5432`
-- Connection > User: `postgres`
-- Connection > Password: `admin`
+- Node 16 (devcontainer workspace)
 
 ### Seeding the database
 
