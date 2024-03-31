@@ -1,5 +1,3 @@
-version: '3'
-
 # this docker-compose file is used both to run the app locally (combined with .devcontainer/devcontainer.json)
 # and to run the app in production (combined with docker-compose.prod.yml)
 
